@@ -1,24 +1,23 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!-- res/menu/bottom_nav_menu.xml -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_home"
-        android:title="home" />
+        android:id="@+id/menu_home"
+        android:icon="@drawable/icon_home"
+        android:title="Home" />
     <item
-        android:id="@+id/navigation_menu"
-        android:icon="@drawable/ic_search"
-        android:title="search" />
+        android:id="@+id/menu_menu"
+        android:icon="@drawable/icon_menu"
+        android:title="Menu" />
     <item
-        android:id="@+id/navigation_search"
-        android:icon="@drawable/ic_booking"
-        android:title="booking" />
+        android:id="@+id/menu_search"
+        android:icon="@drawable/icon_search"
+        android:title="Search" />
     <item
-        android:id="@+id/navigation_booking"
-        android:icon="@drawable/ic_profile"
-        android:title="profile" />
+        android:id="@+id/menu_booking"
+        android:icon="@drawable/icon_booking"
+        android:title="Booking" />
     <item
-        android:id="@+id/navigation_settings"
-        android:icon="@drawable/ic_settings"
-        android:title="settings" />
+        android:id="@+id/menu_profile"
+        android:icon="@drawable/icon_profile"
+        android:title="Profile" />
 </menu>
