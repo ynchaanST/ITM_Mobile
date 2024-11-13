@@ -7,27 +7,29 @@
 
 ## Pages
 
-P_01) Log_in
+P_01) (act) Log_in
 
-P_02) Registration
+P_02) (act) Registration
 
-P_03) Main
+P_03) (frg) Main
 
-P_04) Menu
+P_04) (frg)Menu
 
-P_05) Search
+P_05) (frg) Search
 
-P_06) Booking
+P_06) (frg) Booking
 
-P_07) My_page
+P_07) (frg) Profile
 
-P_08) OCR
+P_08) (frg) OCR
 
-P_09) Receit
+P_09) (frg) Receit
 
-P_10) Ranking
+P_10) (frg) Ranking
 
-P_11) Settings
+P_11) (act) Settings
+
+P_12) (frg) Notice
 
 
 ## Domain
