@@ -44,12 +44,12 @@
         android:contentDescription="Booking" />
 
     <ImageButton
-        android:id="@+id/settings_button"
+        android:id="@+id/profile_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:src="@drawable/icon_profile"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Settings" />
+        android:contentDescription="profile" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

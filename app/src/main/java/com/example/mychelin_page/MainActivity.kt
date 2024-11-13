@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // 초기 화면 프래그먼트 설정 (HomeFragment)
+        // 초기 화면 설정 (HomeFragment)
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, HomeFragment())
             .commit()
@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<ImageButton>(R.id.booking_button).setOnClickListener {
             replaceFragment(BookingFragment())
         }
-        findViewById<ImageButton>(R.id.settings_button).setOnClickListener {
+        findViewById<ImageButton>(R.id.profile_button).setOnClickListener {
             replaceFragment(SettingsFragment())
         }
     }
