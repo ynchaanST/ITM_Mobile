@@ -1,27 +1,26 @@
-<!-- res/navigation/navigation_graph.xml -->
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/navigation_graph"
     app:startDestination="@id/menu_home">
 
     <fragment
-        android:id="@+id/menu_home"
-        android:name="com.example.mychelin_page.HomeFragment"
-        android:label="Home" />
-    <fragment
         android:id="@+id/menu_menu"
         android:name="com.example.mychelin_page.MenuFragment"
-        android:label="Menu" />
+        android:label="menu" />
     <fragment
-        android:id="@+id/menu_search"
+        android:id="@+id/menu_map"
         android:name="com.example.mychelin_page.SearchFragment"
-        android:label="Search" />
+        android:label="search" />
+    <fragment
+        android:id="@+id/menu_home"
+        android:name="com.example.mychelin_page.HomeFragment"
+        android:label="home" />
     <fragment
         android:id="@+id/menu_booking"
         android:name="com.example.mychelin_page.BookingFragment"
-        android:label="Booking" />
+        android:label="booking" />
     <fragment
         android:id="@+id/menu_profile"
         android:name="com.example.mychelin_page.ProfileFragment"
-        android:label="Profile" />
+        android:label="profile" />
 </navigation>
