@@ -3,21 +3,26 @@
     <item
         android:id="@+id/menu_menu"
         android:icon="@drawable/icon_menu"
-        android:title="menu" />
+        android:title="@string/menu"
+        android:visible="true" />
     <item
         android:id="@+id/menu_map"
         android:icon="@drawable/icon_search"
-        android:title="Search" />
+        android:title="@string/search"
+        android:visible="true" />
     <item
         android:id="@+id/menu_home"
         android:icon="@drawable/icon_home"
-        android:title="home" />
+        android:title="@string/home"
+        android:visible="true" />
     <item
         android:id="@+id/menu_booking"
         android:icon="@drawable/icon_booking"
-        android:title="booking" />
+        android:title="@string/booking"
+        android:visible="true" />
     <item
         android:id="@+id/menu_profile"
         android:icon="@drawable/icon_profile"
-        android:title="profile" />
+        android:title="@string/profile"
+        android:visible="true" />
 </menu>

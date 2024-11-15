@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Mychelin_Page</string>
+    <string name="menu">menu</string>
+    <string name="search">Search</string>
+    <string name="home">home</string>
+    <string name="booking">booking</string>
+    <string name="profile">profile</string>
 </resources>

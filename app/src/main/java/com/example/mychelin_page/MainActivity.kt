@@ -21,5 +21,12 @@ class MainActivity : AppCompatActivity() {
         // BottomNavigationView와 NavController를 연결하여 화면 전환 처리
         findViewById<BottomNavigationView>(R.id.bottom_navigation)
             .setupWithNavController(navController)
+//        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+//        bottomNavigationView.setupWithNavController(navController)
+
+        // 컬러 필터 제거
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavigationView.itemIconTintList = null
+
     }
 }
