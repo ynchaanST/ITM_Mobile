@@ -19,6 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:menu="@menu/bottom_nav_menu"
-        app:itemIconTint="@null"/>
+        app:itemIconSize="40dp"
+        app:itemIconTint="@null"
+        app:menu="@menu/bottom_nav_menu" />
 </RelativeLayout>
