@@ -49,9 +49,9 @@
             android:hint="@string/email_hint"
             android:inputType="textEmailAddress"
             android:padding="12dp"
-            android:backgroundTint="#D3D3D3"
+            android:backgroundTint="#8B0000"
             android:textColor="@android:color/black"
-            android:textColorHint="@android:color/darker_gray"
+            android:textColorHint="#8B0000"
             android:autofillHints="emailAddress" />
 
         <!-- Password Input Field -->
@@ -63,9 +63,9 @@
             android:hint="@string/password_hint"
             android:inputType="textPassword"
             android:padding="12dp"
-            android:backgroundTint="#D3D3D3"
+            android:backgroundTint="#8B0000"
             android:textColor="@android:color/black"
-            android:textColorHint="@android:color/darker_gray" />
+            android:textColorHint="#8B0000" />
 
         <!-- Log In Button -->
         <Button
