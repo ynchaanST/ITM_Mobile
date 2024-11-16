@@ -5,27 +5,32 @@
     android:padding="16dp"
     android:background="#8B0000">
 
-    <!-- Container with Rounded Corners Covering Logo -->
+    <!-- Container with Rounded Corners -->
     <LinearLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
         android:orientation="vertical"
         android:background="@drawable/rounded_background"
         android:padding="32dp"
         android:layout_margin="40dp"
         android:elevation="8dp">
 
-        <!-- Logo Icon -->
+        <!-- 프로필 사진 -->
         <ImageView
-            android:id="@+id/logo_icon"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:id="@+id/profile_picture"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="24dp"
-            android:src="@drawable/icon_logo2"
-            android:contentDescription="Logo" />
+            android:src="@drawable/default_profile"
+            android:scaleType="centerCrop"
+            android:background="@drawable/rounded_background"
+            android:contentDescription="Profile Picture"
+            android:clickable="true"
+            android:focusable="true" />
 
         <!-- Name Input Field -->
         <EditText
@@ -88,7 +93,6 @@
             android:textColor="#8B0000"
             android:textStyle="bold"
             android:padding="8dp" />
-
     </LinearLayout>
 
 </RelativeLayout>

@@ -27,7 +27,7 @@
             android:background="@drawable/rounded_background"
             android:scaleType="centerCrop"
             android:contentDescription="@null"
-            android:src="@drawable/profile" />
+            android:src="@drawable/default_profile" />
 
         <!-- 사용자 정보와 Settings 아이콘 -->
         <LinearLayout
