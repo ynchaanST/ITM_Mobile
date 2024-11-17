@@ -28,6 +28,8 @@
         <!-- Register Activity -->
         <activity android:name=".RegisterActivity" android:exported="true" />
 
+        <activity android:name=".SettingsActivity" android:exported="true" />
+
         <!-- FileProvider for Camera Integration -->
         <provider
             android:name="androidx.core.content.FileProvider"
