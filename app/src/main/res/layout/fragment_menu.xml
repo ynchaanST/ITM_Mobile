@@ -22,23 +22,27 @@
 
     <ImageButton
         android:id="@+id/btnNotice"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="16dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="go to Notice"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:src="@drawable/icon_notice"
-        app:layout_constraintBottom_toBottomOf="@id/titleText"
+        android:scaleType="fitCenter"
+        android:padding="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toStartOf="@id/btnSettings"
         app:layout_constraintTop_toTopOf="@id/titleText"
+        app:layout_constraintBottom_toBottomOf="@id/titleText"
+        android:contentDescription="go to Notice"
         app:tint="@null"
         tools:visibility="visible" />
 
     <ImageButton
         android:id="@+id/btnSettings"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginEnd="16dp"
+        android:scaleType="fitCenter"
+        android:padding="8dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/icon_settings"
         app:layout_constraintBottom_toBottomOf="@id/titleText"
@@ -46,7 +50,7 @@
         app:layout_constraintTop_toTopOf="@id/titleText"
         android:contentDescription="go to Settings"
         app:tint="@null"
-        android:visibility="visible"/>
+        tools:visibility="visible" />
 
     <LinearLayout
         android:id="@+id/announcementLayout"

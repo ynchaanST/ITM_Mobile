@@ -11,10 +11,11 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Button
+import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import com.example.mychelin_page.R
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MenuFragment : Fragment(R.layout.fragment_menu) {
+class MenuFragment : Fragment() {
     private lateinit var btnNotice: ImageButton
     private lateinit var btnSettings: ImageButton
     private lateinit var announcementText: TextView
@@ -31,7 +32,14 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_menu, container, false)
 
-        // 뷰 초기화
+        initializeViews(view)
+        setupListeners()
+        setupAnnouncementText()
+
+        return view
+    }
+
+    private fun initializeViews(view: View) {
         btnNotice = view.findViewById(R.id.btnNotice)
         btnSettings = view.findViewById(R.id.btnSettings)
         announcementText = view.findViewById(R.id.announcementText)
@@ -40,55 +48,37 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
         btnServiceInfo = view.findViewById(R.id.btnServiceInfo)
         btnNoticeLink = view.findViewById(R.id.btnNoticeLink)
         btnBugReport = view.findViewById(R.id.btnBugReport)
-
-        setupListeners()
-        setupAnnouncementText()
-
-        return view
     }
 
     private fun setupListeners() {
-        // 알림 버튼
         btnNotice.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.navigation_graph, NoticeFragment())
-                .addToBackStack(null)
-                .commit()
+            try {
+                findNavController().navigate(R.id.menu_notice)
+            } catch (e: Exception) {
+                Toast.makeText(context, "Failed to open Notice: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
         }
 
-        // 설정 버튼
         btnSettings.setOnClickListener {
-            startActivity(Intent(requireContext(), SettingsActivity::class.java))
+            try {
+                val intent = Intent(requireContext(), SettingsActivity::class.java)
+                startActivity(intent)
+            } catch (e: Exception) {
+                Toast.makeText(context, "Failed to open Settings: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
         }
 
-        // FAQ 버튼
-        btnFrequentQna.setOnClickListener {
-            openUrl("https://www.naver.com/")
-        }
+        btnFrequentQna.setOnClickListener { openUrl("https://www.naver.com/") }
+        btnServiceInfo.setOnClickListener { openUrl("https://github.com/ynchaanST/ITM_Mobile") }
+        btnNoticeLink.setOnClickListener { openUrl("https://eclass.seoultech.ac.kr/") }
 
-        // 서비스 정보 버튼
-        btnServiceInfo.setOnClickListener {
-            openUrl("https://github.com/ynchaanST/ITM_Mobile")
-        }
-
-        // 공지사항 링크 버튼
-        btnNoticeLink.setOnClickListener {
-            openUrl("https://eclass.seoultech.ac.kr/")
-        }
-
-        // 버그 리포트 버튼
         btnBugReport.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.navigation_graph, ReportFragment())
-                .addToBackStack(null)
-                .commit()
+            try {
+                findNavController().navigate(R.id.menu_report)
+            } catch (e: Exception) {
+                Toast.makeText(context, "Failed to open Bug Report: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
         }
-
-        val IcNotice = view?.findViewById<ImageButton>(R.id.btnNotice)
-        IcNotice?.clearColorFilter()
-
-        val IcSettings = view?.findViewById<ImageButton>(R.id.btnSettings)
-        IcSettings?.clearColorFilter()
     }
 
     private fun setupAnnouncementText() {
@@ -96,7 +86,11 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
     }
 
     private fun openUrl(url: String) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        startActivity(intent)
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(context, "Failed to open URL: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
     }
 }
