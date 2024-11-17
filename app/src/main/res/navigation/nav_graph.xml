@@ -24,4 +24,5 @@
         android:id="@+id/menu_profile"
         android:name="com.example.mychelin_page.ProfileFragment"
         android:label="profile" />
+
 </navigation>
