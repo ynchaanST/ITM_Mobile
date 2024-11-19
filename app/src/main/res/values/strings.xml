@@ -17,4 +17,6 @@
     <string name="card2_text">Expense Summary</string>
     <string name="card3_text">Additional Info</string>
     <string name="settings_icon_description">Settings</string>
+    <string name="change_profile_picture">Change Profile Picture</string>
+    <string name="save_changes">Save Changes</string>
 </resources>

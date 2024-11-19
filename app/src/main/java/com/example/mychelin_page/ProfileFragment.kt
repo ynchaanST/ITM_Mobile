@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 
 class ProfileFragment : Fragment() {
@@ -22,12 +23,27 @@ class ProfileFragment : Fragment() {
         settingsIcon = view.findViewById(R.id.settings_icon)
 
         // Set up click listener for the settings icon
-        settingsIcon.setOnClickListener {
-            // Navigate to SettingsActivity
-            val intent = Intent(requireContext(), SettingsActivity::class.java)
-            startActivity(intent)
-        }
+        setupSettingsButton()
 
         return view
+    }
+
+    private fun setupSettingsButton() {
+        settingsIcon.setOnClickListener {
+            navigateToSettings()
+        }
+    }
+
+    private fun navigateToSettings() {
+        try {
+            val intent = Intent(requireContext(), SettingsActivity::class.java)
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(
+                requireContext(),
+                "Unable to open settings. Please try again.",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 }

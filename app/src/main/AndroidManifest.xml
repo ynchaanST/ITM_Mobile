@@ -31,6 +31,10 @@
         <!-- Register Activity -->
         <activity android:name=".RegisterActivity" android:exported="true" />
 
+        <!-- Settings Activity -->
+        <activity android:name=".SettingsActivity" android:exported="true" />
+
+
         <!-- FileProvider for Camera Integration -->
         <provider
             android:name="androidx.core.content.FileProvider"
