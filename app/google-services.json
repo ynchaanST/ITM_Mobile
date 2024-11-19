@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "841138193356",
+    "project_id": "mychelin-eb6c9",
+    "storage_bucket": "mychelin-eb6c9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:841138193356:android:1bb3be966a238db9be9369",
+        "android_client_info": {
+          "package_name": "com.example.mychelin_page"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHmODilL29svyBAUuImwQcQISexfOkiNY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
