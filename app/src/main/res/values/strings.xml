@@ -1,8 +1,20 @@
 <resources>
     <string name="app_name">Mychelin_Page</string>
+    <string name="app_title">MYCHELIN GUIDE</string>
     <string name="menu">menu</string>
     <string name="search">Search</string>
     <string name="home">home</string>
     <string name="booking">booking</string>
     <string name="profile">profile</string>
+    <string name="name_hint">Name</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="login_button">Log In</string>
+    <string name="register_button">Register</string>
+    <string name="create_account">Create an Account</string>
+    <string name="already_have_account">Already have an account?</string>
+    <string name="card1_text">Recent visits</string>
+    <string name="card2_text">Expense Summary</string>
+    <string name="card3_text">Additional Info</string>
+    <string name="settings_icon_description">Settings</string>
 </resources>

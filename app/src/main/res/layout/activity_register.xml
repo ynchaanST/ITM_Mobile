@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="#8B0000">
+
+    <!-- Container with Rounded Corners -->
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical"
+        android:background="@drawable/rounded_background"
+        android:padding="32dp"
+        android:layout_margin="40dp"
+        android:elevation="8dp">
+
+        <!-- 프로필 사진 -->
+        <ImageView
+            android:id="@+id/profile_picture"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="24dp"
+            android:src="@drawable/default_profile"
+            android:scaleType="centerCrop"
+            android:background="@drawable/rounded_background"
+            android:contentDescription="Profile Picture"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <!-- Name Input Field -->
+        <EditText
+            android:id="@+id/name_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:hint="@string/name_hint"
+            android:inputType="textPersonName"
+            android:padding="12dp"
+            android:backgroundTint="#8B0000"
+            android:textColor="@android:color/black"
+            android:textColorHint="#8B0000" />
+
+        <!-- Email Input Field -->
+        <EditText
+            android:id="@+id/email_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:hint="@string/email_hint"
+            android:inputType="textEmailAddress"
+            android:padding="12dp"
+            android:backgroundTint="#8B0000"
+            android:textColor="@android:color/black"
+            android:textColorHint="#8B0000"
+            android:autofillHints="emailAddress" />
+
+        <!-- Password Input Field -->
+        <EditText
+            android:id="@+id/password_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:hint="@string/password_hint"
+            android:inputType="textPassword"
+            android:padding="12dp"
+            android:backgroundTint="#8B0000"
+            android:textColor="@android:color/black"
+            android:textColorHint="#8B0000" />
+
+        <!-- Register Button -->
+        <Button
+            android:id="@+id/register_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="@string/register_button"
+            android:padding="12dp"
+            android:backgroundTint="#8B0000"
+            android:textColor="@android:color/white" />
+
+        <!-- Already have an Account TextView -->
+        <TextView
+            android:id="@+id/already_have_account_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/already_have_account"
+            android:textColor="#8B0000"
+            android:textStyle="bold"
+            android:padding="8dp" />
+    </LinearLayout>
+
+</RelativeLayout>

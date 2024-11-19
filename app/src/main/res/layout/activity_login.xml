@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="#8B0000">
+
+    <!-- Logo Icon -->
+    <ImageView
+        android:id="@+id/logo_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="48dp"
+        android:src="@drawable/icon_logo"
+        android:contentDescription="Logo" />
+
+    <!-- Container with Rounded Corners -->
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/logo_icon"
+        android:layout_marginTop="32dp"
+        android:orientation="vertical"
+        android:background="@drawable/rounded_background"
+        android:padding="32dp"
+        android:layout_margin="40dp"
+        android:elevation="8dp">
+
+        <!-- App Title -->
+        <TextView
+            android:id="@+id/app_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="32dp"
+            android:text="MYCHELIN GUIDE"
+            android:textColor="#8B0000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <!-- Email Input Field -->
+        <EditText
+            android:id="@+id/email_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:hint="email"
+            android:inputType="textEmailAddress"
+            android:padding="12dp"
+            android:backgroundTint="#8B0000"
+            android:textColor="@android:color/black"
+            android:textColorHint="#8B0000"
+            android:autofillHints="emailAddress" />
+
+        <!-- Password Input Field -->
+        <EditText
+            android:id="@+id/password_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:hint="password"
+            android:inputType="textPassword"
+            android:padding="12dp"
+            android:backgroundTint="#8B0000"
+            android:textColor="@android:color/black"
+            android:textColorHint="#8B0000" />
+
+        <!-- Log In Button -->
+        <Button
+            android:id="@+id/login_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Login"
+            android:padding="12dp"
+            android:backgroundTint="#8B0000"
+            android:textColor="@android:color/white" />
+
+        <!-- Create an Account TextView -->
+        <TextView
+            android:id="@+id/create_account_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Create Account"
+            android:textColor="#8B0000"
+            android:textStyle="bold"
+            android:padding="8dp" />
+
+    </LinearLayout>
+
+</RelativeLayout>
