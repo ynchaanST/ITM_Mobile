@@ -27,6 +27,5 @@ class MainActivity : AppCompatActivity() {
         // 컬러 필터 제거
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigationView.itemIconTintList = null
-
     }
 }
