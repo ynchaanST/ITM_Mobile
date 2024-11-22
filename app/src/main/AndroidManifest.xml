@@ -2,12 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.mychelin_page">
 
-    <!-- 필요한 권한 추가 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -17,23 +16,35 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Mychelin_Page">
 
+        <!-- app push 관련된 연구 파트 -->
+        <service
+            android:name=".appNotice"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
         <!-- Login Activity as Launcher Activity -->
-        <activity android:name=".LoginActivity" android:exported="true">
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!-- Main Activity -->
-        <activity android:name=".MainActivity" android:exported="true" />
-
-        <!-- Register Activity -->
-        <activity android:name=".RegisterActivity" android:exported="true" />
-
-        <!-- Settings Activity -->
-        <activity android:name=".SettingsActivity" android:exported="true" />
-
+        <activity
+            android:name=".MainActivity"
+            android:exported="true" />
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="true" />
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="true" />
 
         <!-- FileProvider for Camera Integration -->
         <provider
@@ -48,11 +59,10 @@
 
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
-            android:value="8ncq4hnswu"/>
+            android:value="8ncq4hnswu" />
         <meta-data
             android:name="naver_client_secret"
             android:value="VKFgdhKpLwYMLWZEh81rgN87eForBC12XEq6CRzb" />
-
     </application>
 
 </manifest>

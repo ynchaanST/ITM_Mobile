@@ -61,14 +61,7 @@ dependencies {
     implementation ("com.naver.maps:map-sdk:3.19.1") // Use the latest version
 
 //    // Firebase 추가
-//    implementation (platform("com.google.firebase:firebase-bom:32.7.0"))
-//    implementation ("com.google.firebase:firebase-database:20.3.0")
-//    // Glide 추가
-//    implementation ("com.github.bumptech.glide:glide:4.16.0")
-//    annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
-//
-//    // ViewModel 관련 추가
-//    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
-//    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
-//    implementation ("androidx.fragment:fragment-ktx:1.6.2")
+//    implementation ("com.google.firebase:firebase-bom:32.7.0"))
+    implementation ("com.google.firebase:firebase-messaging-ktx:24.1.0")
+
 }
