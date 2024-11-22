@@ -12,20 +12,6 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <SearchView
-            android:id="@+id/search_view"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:background="@drawable/search_background"
-            android:queryHint="Search..."
-            android:iconifiedByDefault="false"
-            android:queryBackground="@null"
-            android:searchIcon="@android:drawable/ic_menu_search"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <!-- 날씨 카드 위젯 -->
         <androidx.cardview.widget.CardView
             android:id="@+id/weather_card"
@@ -36,7 +22,7 @@
             app:cardElevation="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/search_view">
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
@@ -196,7 +182,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Rating"
+                    android:text="MYCHELIN Stars"
                     android:textSize="14sp"
                     android:layout_marginTop="16dp"
                     android:textColor="#000000" />
@@ -205,8 +191,8 @@
                     android:id="@+id/rating_bar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:numStars="5"
-                    android:stepSize="0.5"
+                    android:numStars="3"
+                    android:stepSize="1"
                     android:layout_marginTop="8dp" />
 
                 <!-- Visit Count -->
