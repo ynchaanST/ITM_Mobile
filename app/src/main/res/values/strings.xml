@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Mychelin_Page</string>
     <string name="app_title">MYCHELIN GUIDE</string>
-    <string name="menu">menu</string>
+    <string name="menu">Menu</string>
     <string name="search">Search</string>
     <string name="home">home</string>
     <string name="booking">booking</string>
@@ -19,4 +19,15 @@
     <string name="settings_icon_description">Settings</string>
     <string name="change_profile_picture">Change Profile Picture</string>
     <string name="save_changes">Save Changes</string>
+    <string name="restaurant_icon">Restaurant Icon</string>
+    <string name="restaurant_info">Restaurant Info</string>
+    <string name="restaurant_name">Restaurant Name</string>
+    <string name="amount_spent">Amount Spent</string>
+    <string name="mychelin_stars">MYCHELIN Stars</string>
+    <string name="visit_count">Visit Count</string>
+    <string name="submit">Submit</string>
+    <string name="hint_enter_restaurant_name">Enter restaurant name</string>
+    <string name="hint_enter_menu">Enter menu</string>
+    <string name="hint_enter_price">Enter price</string>
+    <string name="hint_enter_visit_count">Enter visit count</string>
 </resources>
