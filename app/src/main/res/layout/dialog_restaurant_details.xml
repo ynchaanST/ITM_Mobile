@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -9,18 +10,25 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- 식당 이름 입력 -->
+        <EditText
+            android:id="@+id/restaurant_name_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="식당 이름" />
+
+        <!-- 나머지 입력 필드들 -->
         <EditText
             android:id="@+id/menu_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Menu"
-            android:inputType="text" />
+            android:hint="메뉴" />
 
         <EditText
             android:id="@+id/amount_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Amount Spent"
+            android:hint="금액"
             android:inputType="numberDecimal" />
 
         <RatingBar
@@ -28,36 +36,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:numStars="5"
-            android:stepSize="0.5"
-            android:layout_marginTop="8dp" />
+            android:stepSize="0.5" />
 
         <EditText
             android:id="@+id/michelin_stars_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Michelin Stars"
+            android:hint="미슐랭 스타 개수"
             android:inputType="number" />
 
         <EditText
             android:id="@+id/visit_count_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Visit Count"
+            android:hint="방문 횟수"
             android:inputType="number" />
-
-        <Button
-            android:id="@+id/photo_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select Photo"
-            android:layout_marginTop="8dp" />
-
-        <ImageView
-            android:id="@+id/photo_image_view"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scaleType="centerCrop"
-            android:layout_marginTop="8dp" />
 
     </LinearLayout>
 </ScrollView>

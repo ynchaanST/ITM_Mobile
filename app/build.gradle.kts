@@ -53,6 +53,9 @@ dependencies {
     implementation (libs.androidx.navigation.fragment.ktx)
     implementation (libs.androidx.navigation.ui.ktx)
 
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0'")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+
     implementation ("com.google.android.gms:play-services-location:21.3.0")
     implementation ("com.naver.maps:map-sdk:3.19.1") // Use the latest version
 

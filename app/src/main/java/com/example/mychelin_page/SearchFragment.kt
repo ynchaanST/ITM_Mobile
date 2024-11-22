@@ -1,19 +1,19 @@
 package com.example.mychelin_page
 
+import VisitData
 import android.Manifest
 import android.content.pm.PackageManager
-import android.net.Uri
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.*
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
@@ -29,7 +29,11 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
 
     private val LOCATION_PERMISSION_REQUEST_CODE = 1000
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val rootView = inflater.inflate(R.layout.fragment_search, container, false)
 
         // MapView 초기화
@@ -47,145 +51,112 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
         naverMap.locationSource = locationSource
 
-        // 위치 권한 확인
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        // 위치 권한 확인 및 설정
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
 
             // 위치 권한 요청
-            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
             return
         }
 
         naverMap.locationTrackingMode = LocationTrackingMode.Follow
 
-        // 위치 변경 리스너 설정
-        naverMap.addOnLocationChangeListener { location ->
-            val latitude = location.latitude
-            val longitude = location.longitude
-            Log.d("SearchFragment", "현재 위치: $latitude, $longitude")
-
-            // 주변 식당 로드 (필요에 따라 구현)
-             loadNearbyRestaurants(latitude, longitude)
+        // 지도 클릭 리스너 설정
+        naverMap.setOnMapClickListener { pointF, latLng ->
+            addMichelinMarker(latLng)
         }
 
         // 미슐랭 스타 식당 표시
         displayMichelinStarredRestaurants()
     }
 
-    private fun displayMichelinStarredRestaurants() {
-        val currentUser = FirebaseAuth.getInstance().currentUser
-        if (currentUser != null) {
-            val db = FirebaseFirestore.getInstance()
-            val userVisitsRef = db.collection("users").document(currentUser.uid).collection("visits")
+    private fun createScaledOverlayImage(resourceId: Int, width: Int, height: Int): OverlayImage {
+        val bitmap = BitmapFactory.decodeResource(resources, resourceId)
+        val scaledBitmap = Bitmap.createScaledBitmap(bitmap, width, height, false)
+        return OverlayImage.fromBitmap(scaledBitmap)
+    }
 
-            // michelinStars 필드가 0보다 큰 데이터 가져오기
-            userVisitsRef.whereGreaterThan("michelinStars", 0)
-                .get()
-                .addOnSuccessListener { documents ->
-                    for (document in documents) {
-                        val visitData = document.toObject(VisitData::class.java)
+    private fun addMichelinMarker(latLng: LatLng) {
+        val marker = Marker()
+        marker.position = latLng
+        marker.icon = createScaledOverlayImage(R.drawable.ic_michelin_star, 50, 50)  // 미슐랭 스타 아이콘 설정
+        marker.map = naverMap
 
-                        // 마커 생성
-                        val marker = Marker()
-                        marker.position = LatLng(visitData.latitude, visitData.longitude)
-                        marker.captionText = visitData.restaurantName
-
-                        // 커스텀 아이콘 설정 (미슐랭 스타 이미지)
-                        val michelinStarIcon = OverlayImage.fromResource(R.drawable.ic_michelin_star)
-                        marker.icon = michelinStarIcon
-
-                        marker.map = naverMap
-                    }
-                }
-                .addOnFailureListener { e ->
-                    Log.e("SearchFragment", "미슐랭 스타 식당 데이터 불러오기 오류", e)
-                }
-        } else {
-            Toast.makeText(requireContext(), "사용자가 로그인되어 있지 않습니다", Toast.LENGTH_SHORT).show()
+        // 마커 클릭 리스너 설정
+        marker.setOnClickListener { overlay ->
+            showVisitData(null, latLng)
+            true
         }
     }
 
-    // 기존 코드 (loadNearbyRestaurants, showRestaurantDetails, saveVisitData 등)
-    private fun loadNearbyRestaurants(latitude: Double, longitude: Double) {
-        // Fetch nearby restaurants using Naver Places API or any other source
-        // For demonstration, let's use dummy data
-
-        val restaurants = listOf(
-            Restaurant("Restaurant A", latitude + 0.001, longitude + 0.001),
-            Restaurant("Restaurant B", latitude - 0.001, longitude - 0.001)
-        )
-
-        for (restaurant in restaurants) {
-            val marker = Marker()
-            marker.position = LatLng(restaurant.latitude, restaurant.longitude)
-            marker.map = naverMap
-            marker.captionText = restaurant.name
-
-            // Set a tag to the marker
-            marker.tag = restaurant
-
-            marker.setOnClickListener { overlay ->
-                val selectedRestaurant = overlay.tag as Restaurant
-                // Show restaurant details and allow user to save visit data
-                showRestaurantDetails(selectedRestaurant)
-                true
-            }
-        }
-    }
-
-    private fun showRestaurantDetails(restaurant: Restaurant) {
-        // Inflate custom dialog layout
-        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_restaurant_details, null)
+    private fun showVisitData(visitData: VisitData?, latLng: LatLng) {
+        val dialogView =
+            LayoutInflater.from(requireContext()).inflate(R.layout.dialog_restaurant_details, null)
         val builder = AlertDialog.Builder(requireContext())
         builder.setView(dialogView)
 
-        // Initialize views in the dialog
+        // 뷰 초기화
+        val restaurantNameEditText =
+            dialogView.findViewById<EditText>(R.id.restaurant_name_edit_text)
         val menuEditText = dialogView.findViewById<EditText>(R.id.menu_edit_text)
         val amountEditText = dialogView.findViewById<EditText>(R.id.amount_edit_text)
         val ratingBar = dialogView.findViewById<RatingBar>(R.id.rating_bar)
         val michelinStarsEditText = dialogView.findViewById<EditText>(R.id.michelin_stars_edit_text)
         val visitCountEditText = dialogView.findViewById<EditText>(R.id.visit_count_edit_text)
-        val photoButton = dialogView.findViewById<Button>(R.id.photo_button)
-        val photoImageView = dialogView.findViewById<ImageView>(R.id.photo_image_view)
 
-        var selectedPhotoUri: Uri? = null
-
-        // Set up photo selection
-        val selectPhotoLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            if (uri != null) {
-                selectedPhotoUri = uri
-                photoImageView.setImageURI(uri)
-            }
+        if (visitData != null) {
+            // 기존 데이터 설정
+            restaurantNameEditText.setText(visitData.restaurantName)
+            menuEditText.setText(visitData.menu)
+            amountEditText.setText(visitData.amountSpent.toString())
+            ratingBar.rating = visitData.rating
+            michelinStarsEditText.setText(visitData.michelinStars.toString())
+            visitCountEditText.setText(visitData.visitCount.toString())
         }
 
-        photoButton.setOnClickListener {
-            selectPhotoLauncher.launch("image/*")
-        }
-
-        builder.setTitle(restaurant.name)
-        builder.setPositiveButton("Save") { _, _ ->
-            // Get input data
+        builder.setPositiveButton("저장") { _, _ ->
+            // 입력 데이터 가져오기
+            val restaurantName = restaurantNameEditText.text.toString()
             val menu = menuEditText.text.toString()
             val amount = amountEditText.text.toString().toDoubleOrNull() ?: 0.0
             val rating = ratingBar.rating
             val michelinStars = michelinStarsEditText.text.toString().toIntOrNull() ?: 0
             val visitCount = visitCountEditText.text.toString().toIntOrNull() ?: 1
 
-            // Create VisitData object
-            val visitData = VisitData(
-                restaurantName = restaurant.name,
+            val restaurantId = generateRestaurantId(restaurantName, latLng)
+
+            // VisitData 객체 생성
+            val newVisitData = VisitData(
+                restaurantId = restaurantId,
+                restaurantName = restaurantName,
                 menu = menu,
                 amountSpent = amount,
                 rating = rating,
                 michelinStars = michelinStars,
                 visitCount = visitCount,
-                photoUri = selectedPhotoUri?.toString() ?: ""
+                latitude = latLng.latitude,
+                longitude = latLng.longitude
             )
 
-            // Save data to Firestore
-            saveVisitData(visitData)
+            // 데이터 저장
+            saveVisitData(newVisitData)
         }
-        builder.setNegativeButton("Cancel", null)
+        builder.setNegativeButton("취소", null)
         builder.show()
     }
 
@@ -193,47 +164,83 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser != null) {
             val db = FirebaseFirestore.getInstance()
-            val userVisitsRef = db.collection("users").document(currentUser.uid).collection("visits")
+            val userVisitsRef =
+                db.collection("users").document(currentUser.uid).collection("visits")
+            val visitDataRef = userVisitsRef.document(visitData.restaurantId)
 
-            // If photo is selected, upload it to Firebase Storage
-            if (visitData.photoUri.isNotEmpty()) {
-                val photoUri = Uri.parse(visitData.photoUri)
-                val storageRef = FirebaseStorage.getInstance().reference.child("visit_photos/${currentUser.uid}/${System.currentTimeMillis()}.jpg")
-                val uploadTask = storageRef.putFile(photoUri)
-
-                uploadTask.addOnSuccessListener {
-                    storageRef.downloadUrl.addOnSuccessListener { uri ->
-                        visitData.photoUri = uri.toString()
-                        // Save visit data with photo URL
-                        userVisitsRef.add(visitData)
-                            .addOnSuccessListener { documentReference ->
-                                Toast.makeText(requireContext(), "Visit data saved", Toast.LENGTH_SHORT).show()
-                            }
-                            .addOnFailureListener { e ->
-                                Log.e("SearchFragment", "Error saving visit data", e)
-                            }
-                    }
-                }.addOnFailureListener { e ->
-                    Log.e("SearchFragment", "Photo upload failed", e)
-                    // Save visit data without photo
-                    userVisitsRef.add(visitData)
+            // VisitData 저장
+            visitDataRef.set(visitData)
+                .addOnSuccessListener {
+                    Toast.makeText(requireContext(), "방문 데이터가 저장되었습니다.", Toast.LENGTH_SHORT).show()
+                    // 마커 갱신을 위해 지도 다시 로드
+                    displayMichelinStarredRestaurants()
                 }
-            } else {
-                // Save visit data without photo
-                userVisitsRef.add(visitData)
-                    .addOnSuccessListener { documentReference ->
-                        Toast.makeText(requireContext(), "Visit data saved", Toast.LENGTH_SHORT).show()
-                    }
-                    .addOnFailureListener { e ->
-                        Log.e("SearchFragment", "Error saving visit data", e)
-                    }
-            }
+                .addOnFailureListener { e ->
+                    Log.e("SearchFragment", "Error saving visit data", e)
+                }
         } else {
-            Toast.makeText(requireContext(), "User not signed in", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "사용자가 로그인되어 있지 않습니다", Toast.LENGTH_SHORT).show()
         }
     }
-    // Handle location permission result
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+
+    private val markers = mutableListOf<Marker>()
+
+    private fun displayMichelinStarredRestaurants() {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            val db = FirebaseFirestore.getInstance()
+            val userVisitsRef = db.collection("users").document(currentUser.uid).collection("visits")
+
+            userVisitsRef.get()
+                .addOnSuccessListener { documents ->
+                    clearAllMarkers() // 기존 마커 제거
+
+                    for (document in documents) {
+                        val visitData = document.toObject(VisitData::class.java)
+
+                        val marker = Marker()
+                        marker.position = LatLng(visitData.latitude, visitData.longitude)
+                        marker.captionText = visitData.restaurantName
+                        marker.icon = createScaledOverlayImage(R.drawable.ic_michelin_star, 32, 32)
+                        marker.map = naverMap
+
+
+                        markers.add(marker)
+
+                        marker.setOnClickListener { overlay ->
+                            showVisitData(
+                                visitData,
+                                LatLng(visitData.latitude, visitData.longitude)
+                            )
+                            true
+                        }
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e("SearchFragment", "방문 데이터 불러오기 오류", e)
+                }
+        } else {
+            Toast.makeText(requireContext(), "사용자가 로그인되어 있지 않습니다", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun clearAllMarkers() {
+        for (marker in markers) {
+            marker.map = null
+        }
+        markers.clear()
+    }
+
+    private fun generateRestaurantId(restaurantName: String, latLng: LatLng): String {
+        return "${restaurantName}_${latLng.latitude}_${latLng.longitude}"
+    }
+
+    // 위치 권한 결과 처리
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         if (locationSource.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
             if (!locationSource.isActivated) {
                 naverMap.locationTrackingMode = LocationTrackingMode.None
@@ -242,7 +249,6 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
-
 
     // Lifecycle methods
     override fun onStart() {
@@ -276,17 +282,4 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
     }
 
     // 데이터 클래스
-    data class Restaurant(val name: String, val latitude: Double, val longitude: Double)
-
-    data class VisitData(
-        val restaurantName: String = "",
-        val menu: String = "",
-        val amountSpent: Double = 0.0,
-        val rating: Float = 0f,
-        val michelinStars: Int = 0,
-        val visitCount: Int = 0,
-        var photoUri: String = "",
-        val latitude: Double = 0.0,
-        val longitude: Double = 0.0
-    )
 }
