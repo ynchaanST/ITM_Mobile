@@ -108,14 +108,14 @@
                         android:id="@+id/restaurant_icon"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:contentDescription="Restaurant Icon"
+                        android:contentDescription="@string/restaurant_icon"
                         android:src="@drawable/ic_restaurant"
                         android:layout_gravity="center" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Restaurant Info"
+                        android:text="@string/restaurant_info"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:textColor="#000000"
@@ -127,7 +127,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Restaurant Name"
+                    android:text="@string/restaurant_name"
                     android:textSize="14sp"
                     android:layout_marginTop="16dp"
                     android:textColor="#000000" />
@@ -136,7 +136,7 @@
                     android:id="@+id/input_restaurant_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter restaurant name"
+                    android:hint="@string/hint_enter_restaurant_name"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/edittext_background"
                     android:padding="12dp" />
@@ -146,7 +146,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Menu"
+                    android:text="@string/menu"
                     android:textSize="14sp"
                     android:layout_marginTop="16dp"
                     android:textColor="#000000" />
@@ -155,7 +155,7 @@
                     android:id="@+id/input_menu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter menu"
+                    android:hint="@string/hint_enter_menu"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/edittext_background"
                     android:padding="12dp" />
@@ -164,7 +164,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Amount Spent"
+                    android:text="@string/amount_spent"
                     android:textSize="14sp"
                     android:layout_marginTop="16dp"
                     android:textColor="#000000" />
@@ -173,7 +173,7 @@
                     android:id="@+id/input_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter price"
+                    android:hint="@string/hint_enter_price"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/edittext_background"
                     android:padding="12dp" />
@@ -182,7 +182,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="MYCHELIN Stars"
+                    android:text="@string/mychelin_stars"
                     android:textSize="14sp"
                     android:layout_marginTop="16dp"
                     android:textColor="#000000" />
@@ -199,7 +199,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Visit Count"
+                    android:text="@string/visit_count"
                     android:textSize="14sp"
                     android:layout_marginTop="16dp"
                     android:textColor="#000000" />
@@ -208,7 +208,7 @@
                     android:id="@+id/input_visit_count"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter visit count"
+                    android:hint="@string/hint_enter_visit_count"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/edittext_background"
                     android:padding="12dp" />
@@ -221,7 +221,7 @@
                     android:layout_gravity="end"
                     android:layout_marginTop="16dp"
                     android:backgroundTint="#8B0000"
-                    android:text="Submit"
+                    android:text="@string/submit"
                     android:textStyle="bold"
                     android:textColor="#FFFFFF" />
 
