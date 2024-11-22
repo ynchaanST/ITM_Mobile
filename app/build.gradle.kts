@@ -56,7 +56,19 @@ dependencies {
     implementation ("com.squareup.retrofit2:retrofit:2.9.0'")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
 
+
     implementation ("com.google.android.gms:play-services-location:21.3.0")
     implementation ("com.naver.maps:map-sdk:3.19.1") // Use the latest version
 
+//    // Firebase 추가
+//    implementation (platform("com.google.firebase:firebase-bom:32.7.0"))
+//    implementation ("com.google.firebase:firebase-database:20.3.0")
+//    // Glide 추가
+//    implementation ("com.github.bumptech.glide:glide:4.16.0")
+//    annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
+//
+//    // ViewModel 관련 추가
+//    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+//    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
+//    implementation ("androidx.fragment:fragment-ktx:1.6.2")
 }

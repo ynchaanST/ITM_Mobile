@@ -69,5 +69,5 @@ class LoginActivity : AppCompatActivity() {
         startActivity(intent)
         finish() // Close LoginActivity so the user cannot go back to it with the back button
     }
-    
+
 }

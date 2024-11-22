@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <!-- 버튼 눌렸을 때 -->
+        <shape>
+            <solid android:color="#8B0000" /> <!-- 더 어두운 빨강 -->
+            <corners android:radius="8dp" />
+        </shape>
+    </item>
+    <item>
+        <!-- 기본 버튼 상태 -->
+        <shape>
+            <solid android:color="#600B04" />
+            <corners android:radius="8dp" />
+        </shape>
+    </item>
+</selector>
