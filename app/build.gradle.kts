@@ -64,4 +64,8 @@ dependencies {
 //    implementation ("com.google.firebase:firebase-bom:32.7.0"))
     implementation ("com.google.firebase:firebase-messaging-ktx:24.1.0")
 
+    implementation("org.locationtech.proj4j:proj4j:1.2.3")
+//    implementation("org.osgeo.proj4j:proj4j:1.5.1")
+//    implementation (libs.proj4j)
+
 }
