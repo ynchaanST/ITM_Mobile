@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
@@ -20,10 +21,9 @@ import java.util.*
 
 class RegisterActivity : AppCompatActivity() {
 
-    private lateinit var auth: FirebaseAuth  // Firebase Authentication instance
-    private lateinit var firestore: FirebaseFirestore  // Firestore instance
+    private lateinit var auth: FirebaseAuth
+    private lateinit var firestore: FirebaseFirestore
 
-    // Declare views
     private lateinit var profilePicture: ImageView
     private lateinit var nameEditText: EditText
     private lateinit var emailEditText: EditText
@@ -31,19 +31,16 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var registerButton: Button
     private lateinit var alreadyHaveAccountTextView: TextView
 
-    private var currentPhotoPath: String? = null  // For storing camera photo path
-    private var selectedImageUri: Uri? = null  // For storing selected image URI
+    private var currentPhotoPath: String? = null
+    private var selectedImageUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Ensure that the layout file is named activity_register.xml
         setContentView(R.layout.activity_register)
 
-        // Initialize Firebase Auth and Firestore
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
-        // Initialize views by their IDs from the XML layout
         profilePicture = findViewById(R.id.profile_picture)
         nameEditText = findViewById(R.id.name_edit_text)
         emailEditText = findViewById(R.id.email_edit_text)
@@ -51,22 +48,58 @@ class RegisterActivity : AppCompatActivity() {
         registerButton = findViewById(R.id.register_button)
         alreadyHaveAccountTextView = findViewById(R.id.already_have_account_text_view)
 
-        // Set click listener for the register button
-        registerButton.setOnClickListener {
-            registerUser()
-        }
+        registerButton.setOnClickListener { registerUser() }
 
-        // Set click listener for the "Already have an Account" text view
         alreadyHaveAccountTextView.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-            finish()  // Close this activity to prevent returning to it
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
         }
 
-        // Set click listener for the profile picture
-        profilePicture.setOnClickListener {
-            showImageSelectionDialog()  // Show dialog to select image source
+        profilePicture.setOnClickListener { showImageSelectionDialog() }
+    }
+
+    private fun registerUser() {
+        val username = nameEditText.text.toString().trim()
+        val email = emailEditText.text.toString().trim()
+        val password = passwordEditText.text.toString().trim()
+
+        if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "모든 필드를 입력하세요", Toast.LENGTH_SHORT).show()
+            return
         }
+
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val user = auth.currentUser
+                    if (user != null) {
+                        // Firebase Authentication의 displayName 업데이트
+                        val profileUpdates = UserProfileChangeRequest.Builder()
+                            .setDisplayName(username)
+                            .build()
+
+                        user.updateProfile(profileUpdates)
+                            .addOnCompleteListener { updateTask ->
+                                if (updateTask.isSuccessful) {
+                                    Toast.makeText(this, "회원가입 성공", Toast.LENGTH_SHORT).show()
+                                    navigateToMainActivity()
+                                } else {
+                                    Toast.makeText(
+                                        this,
+                                        "프로필 업데이트 실패: ${updateTask.exception?.message}",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                    }
+                } else {
+                    Toast.makeText(
+                        this,
+                        "회원가입 실패: ${task.exception?.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
     }
 
     private fun showImageSelectionDialog() {
@@ -107,15 +140,13 @@ class RegisterActivity : AppCompatActivity() {
 
     @Throws(IOException::class)
     private fun createImageFile(): File {
-        val timeStamp =
-            SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val storageDir = getExternalFilesDir(null)
         return File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir!!).apply {
             currentPhotoPath = absolutePath
         }
     }
 
-    // Handle result from gallery
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
@@ -128,7 +159,6 @@ class RegisterActivity : AppCompatActivity() {
             }
         }
 
-    // Handle result from camera
     private val cameraLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
@@ -142,86 +172,9 @@ class RegisterActivity : AppCompatActivity() {
             }
         }
 
-    private fun registerUser() {
-        // Retrieve user inputs and trim whitespace
-        val username = nameEditText.text.toString().trim()
-        val email = emailEditText.text.toString().trim()
-        val password = passwordEditText.text.toString().trim()
-
-        // Check if any field is empty
-        if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "모든 필드를 입력하세요", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // Create a new user with Firebase Authentication
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Registration success
-                    saveUserData(username, email)
-                    Toast.makeText(this, "회원가입 성공", Toast.LENGTH_SHORT).show()
-                    navigateToMainActivity()
-                } else {
-                    // Registration failed
-                    Toast.makeText(
-                        this,
-                        "회원가입 실패: ${task.exception?.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-    }
-
-    private fun saveUserData(username: String, email: String) {
-        val userId = auth.currentUser?.uid ?: return
-        val userRef = firestore.collection("users").document(userId)
-        val user = mutableMapOf<String, Any>(
-            "username" to username,
-            "email" to email
-        )
-
-        if (selectedImageUri != null) {
-            // Upload profile image to Firebase Storage
-            val storageRef =
-                FirebaseStorage.getInstance().reference.child("profile_images/$userId.jpg")
-            storageRef.putFile(selectedImageUri!!)
-                .addOnSuccessListener {
-                    storageRef.downloadUrl.addOnSuccessListener { uri ->
-                        user["profileImageUrl"] = uri.toString()
-                        // Save user data including profile image URL
-                        userRef.set(user)
-                            .addOnSuccessListener {
-                                Log.d(
-                                    "RegisterActivity",
-                                    "User data saved successfully"
-                                )
-                            }
-                            .addOnFailureListener { e ->
-                                Log.e("RegisterActivity", "Error saving user data", e)
-                            }
-                    }
-                }
-                .addOnFailureListener { e ->
-                    Log.e("RegisterActivity", "Profile image upload failed", e)
-                    // Save user data without profile image URL
-                    userRef.set(user)
-                }
-        } else {
-            // Save user data without profile image URL
-            userRef.set(user)
-                .addOnSuccessListener {
-                    Log.d("RegisterActivity", "User data saved successfully")
-                }
-                .addOnFailureListener { e ->
-                    Log.e("RegisterActivity", "Error saving user data", e)
-                }
-        }
-    }
-
     private fun navigateToMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
-        finish()  // Close this activity
+        finish()
     }
 }
