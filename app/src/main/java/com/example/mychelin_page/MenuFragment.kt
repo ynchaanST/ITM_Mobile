@@ -17,13 +17,14 @@ import com.example.mychelin_page.R
 
 class MenuFragment : Fragment() {
     private lateinit var btnNotice: ImageButton
-    private lateinit var btnSettings: ImageButton
     private lateinit var announcementText: TextView
     private lateinit var ratingsImage: ImageView
+    private lateinit var btn1: ImageButton
+    private lateinit var btn2: ImageButton
+    private lateinit var btn3: ImageButton
     private lateinit var btnFrequentQna: Button
     private lateinit var btnServiceInfo: Button
-    private lateinit var btnNoticeLink: Button
-    private lateinit var btnBugReport: Button
+    private lateinit var btnReport: Button
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,48 +42,50 @@ class MenuFragment : Fragment() {
 
     private fun initializeViews(view: View) {
         btnNotice = view.findViewById(R.id.btnNotice)
-        btnSettings = view.findViewById(R.id.btnSettings)
         announcementText = view.findViewById(R.id.announcementText)
         ratingsImage = view.findViewById(R.id.ratingsImage)
+        btn1 = view.findViewById(R.id.btn1)
+        btn2 = view.findViewById(R.id.btn2)
+        btn3 = view.findViewById(R.id.btn3)
         btnFrequentQna = view.findViewById(R.id.btnFrequentQna)
         btnServiceInfo = view.findViewById(R.id.btnServiceInfo)
-        btnNoticeLink = view.findViewById(R.id.btnNoticeLink)
-        btnBugReport = view.findViewById(R.id.btnBugReport)
+        btnReport = view.findViewById(R.id.btnReport)
     }
 
     private fun setupListeners() {
         btnNotice.setOnClickListener {
             try {
-                findNavController().navigate(R.id.menu_notice)
+                findNavController().navigate(R.id.page_notice)
             } catch (e: Exception) {
                 Toast.makeText(context, "Failed to open Notice: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
 
-        btnSettings.setOnClickListener {
+        btnReport.setOnClickListener {
             try {
-                val intent = Intent(requireContext(), SettingsActivity::class.java)
-                startActivity(intent)
+                findNavController().navigate(R.id.page_report)
             } catch (e: Exception) {
-                Toast.makeText(context, "Failed to open Settings: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Failed to open Notice: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
 
-        btnFrequentQna.setOnClickListener { openUrl("https://www.naver.com/") }
+        // Added ratings button listeners (you can customize these)
+        btn1.setOnClickListener {
+            Toast.makeText(context, "Rating 1 selected", Toast.LENGTH_SHORT).show()
+        }
+        btn2.setOnClickListener {
+            Toast.makeText(context, "Rating 2 selected", Toast.LENGTH_SHORT).show()
+        }
+        btn3.setOnClickListener {
+            Toast.makeText(context, "Rating 3 selected", Toast.LENGTH_SHORT).show()
+        }
+
+        btnFrequentQna.setOnClickListener { openUrl("https://docs.google.com/document/d/1b5brPzeRmaIxmSku4866Pm5ZE8C1NVdCSQUSWkED22o/edit?tab=t.0") }
         btnServiceInfo.setOnClickListener { openUrl("https://github.com/ynchaanST/ITM_Mobile") }
-        btnNoticeLink.setOnClickListener { openUrl("https://eclass.seoultech.ac.kr/") }
-
-        btnBugReport.setOnClickListener {
-            try {
-                findNavController().navigate(R.id.menu_report)
-            } catch (e: Exception) {
-                Toast.makeText(context, "Failed to open Bug Report: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
     private fun setupAnnouncementText() {
-        announcementText.text = "service launch since 2024"
+        announcementText.text = "Mychelin Page Service Launch! 많관부~"
     }
 
     private fun openUrl(url: String) {
