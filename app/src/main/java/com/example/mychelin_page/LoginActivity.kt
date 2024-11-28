@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 
@@ -17,6 +18,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         // Ensure that the layout file is named activity_login.xml
         setContentView(R.layout.activity_login)
+        enableEdgeToEdge()
 
         // Initialize Firebase Auth
         auth = FirebaseAuth.getInstance()

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.*
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
@@ -38,6 +39,7 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         // Ensure that the layout file is named activity_register.xml
         setContentView(R.layout.activity_register)
+        enableEdgeToEdge()
 
         // Initialize Firebase Auth and Firestore
         auth = FirebaseAuth.getInstance()
