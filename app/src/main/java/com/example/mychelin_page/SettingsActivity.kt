@@ -16,6 +16,7 @@ import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 
 class SettingsActivity : AppCompatActivity() {
@@ -63,15 +64,15 @@ class SettingsActivity : AppCompatActivity() {
         saveChangesButton.setOnClickListener {
             val name = nameEditText.text.toString().trim()
             val email = emailEditText.text.toString().trim()
-            val currentPassword = currentPasswordEditText.text.toString().trim()
+            val password = currentPasswordEditText.text.toString().trim()
 
-            if (name.isEmpty() || email.isEmpty() || currentPassword.isEmpty()) {
+            if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Please fill out all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             user?.let {
-                reauthenticateAndUpdateProfile(it, name, email, currentPassword)
+                reauthenticateAndUpdateProfile(it, name, email, password)
             } ?: run {
                 Toast.makeText(this, "User not logged in", Toast.LENGTH_LONG).show()
             }
@@ -102,6 +103,9 @@ class SettingsActivity : AppCompatActivity() {
                 user.updateProfile(profileUpdates).addOnCompleteListener { nameUpdateTask ->
                     if (nameUpdateTask.isSuccessful) {
                         Toast.makeText(this, "Name updated successfully!", Toast.LENGTH_SHORT).show()
+
+                        // Firestore 데이터 업데이트 호출
+                        updateFirestoreUserData(user.uid, name, email)
                     } else {
                         val errorMessage = nameUpdateTask.exception?.message ?: "Unknown error"
                         Toast.makeText(this, "Failed to update name: $errorMessage", Toast.LENGTH_LONG).show()
@@ -138,7 +142,25 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    // Show a dialog to choose from gallery
+    private fun updateFirestoreUserData(userId: String, name: String, email: String) {
+        val firestore = FirebaseFirestore.getInstance()
+        val userRef = firestore.collection("users").document(userId)
+
+        val updates = mapOf(
+            "username" to name,
+            "email" to email
+        )
+
+        userRef.update(updates).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Toast.makeText(this, "Firestore data updated successfully!", Toast.LENGTH_SHORT).show()
+            } else {
+                val errorMessage = task.exception?.message ?: "Unknown error"
+                Toast.makeText(this, "Failed to update Firestore: $errorMessage", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
     private fun showImageSelectionDialog() {
         val options = arrayOf("Select from Gallery")
         AlertDialog.Builder(this)
@@ -149,13 +171,11 @@ class SettingsActivity : AppCompatActivity() {
             .show()
     }
 
-    // Open the gallery to pick an image
     private fun openGallery() {
         val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         galleryLauncher.launch(galleryIntent)
     }
 
-    // Handle result from gallery
     private val galleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == RESULT_OK) {
             val selectedImageUri: Uri? = result.data?.data
