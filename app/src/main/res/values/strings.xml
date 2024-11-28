@@ -30,4 +30,5 @@
     <string name="hint_enter_menu">Enter menu</string>
     <string name="hint_enter_price">Enter price</string>
     <string name="hint_enter_visit_count">Enter visit count</string>
+    <string name="reservation">reservation</string>
 </resources>

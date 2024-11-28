@@ -187,10 +187,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/rounded_button"
-                android:text="예약 완료"
+
+                android:backgroundTint="#600B04"
+                android:text="수정 완료 -> 임시로 reservation 가는 버튼"
                 android:textColor="@android:color/white"
                 android:textStyle="bold" />
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
