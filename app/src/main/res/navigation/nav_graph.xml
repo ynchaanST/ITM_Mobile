@@ -17,21 +17,24 @@
         android:name="com.example.mychelin_page.HomeFragment"
         android:label="home" />
     <fragment
-        android:id="@+id/menu_booking"
-        android:name="com.example.mychelin_page.BookingFragment"
-        android:label="booking" />
+        android:id="@+id/menu_reservation"
+        android:name="com.example.mychelin_page.ReservationFragment"
+        android:label="reservation" />
     <fragment
         android:id="@+id/menu_profile"
         android:name="com.example.mychelin_page.ProfileFragment"
         android:label="profile" />
 
     <fragment
-        android:id="@+id/menu_notice"
+        android:id="@+id/page_booking"
+        android:name="com.example.mychelin_page.BookingFragment"
+        android:label="booking" />
+    <fragment
+        android:id="@+id/page_notice"
         android:name="com.example.mychelin_page.NoticeFragment"
         android:label="notice" />
-
     <fragment
-        android:id="@+id/menu_report"
+        android:id="@+id/page_report"
         android:name="com.example.mychelin_page.ReportFragment"
         android:label="report" />
 
