@@ -30,4 +30,12 @@
     <string name="hint_enter_menu">Enter menu</string>
     <string name="hint_enter_price">Enter price</string>
     <string name="hint_enter_visit_count">Enter visit count</string>
+    <string name="total_spent">Total Spent</string>
+    <string name="hint_total_spent">Total amount spent</string>
+    <string-array name="filter_options">
+        <item>All Restaurants</item>
+        <item>Michelin 3 Stars</item>
+        <item>Michelin 2 Stars</item>
+        <item>Michelin 1 Star</item>
+    </string-array>
 </resources>

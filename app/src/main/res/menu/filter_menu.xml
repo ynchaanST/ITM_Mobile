@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/menu/filter_menu.xml -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/filter_all" android:title="모든 식당" />
+    <item android:id="@+id/filter_3_stars" android:title="미슐랭 3스타" />
+    <item android:id="@+id/filter_2_stars" android:title="미슐랭 2스타" />
+    <item android:id="@+id/filter_1_star" android:title="미슐랭 1스타" />
+</menu>

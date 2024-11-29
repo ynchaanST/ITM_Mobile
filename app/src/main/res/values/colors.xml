@@ -2,4 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="gold">#FFD700</color> <!-- 황금색 -->
+    <color name="silver">#C0C0C0</color> <!-- 은색 -->
+    <color name="bronze">#CD7F32</color>
 </resources>
