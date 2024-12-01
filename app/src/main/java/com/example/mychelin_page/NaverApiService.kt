@@ -8,11 +8,12 @@ import retrofit2.http.Query
 interface NaverApiService {
     @GET("v1/search/local.json")
     fun searchPlaces(
-        @Header("X-Naver-Client-Id") clientId: String,
-        @Header("X-Naver-Client-Secret") clientSecret: String,
         @Query("query") query: String,
+        @Query("display") display: Int = 20,
+        @Query("start") start: Int = 1,
+        @Query("sort") sort: String = "random",
         @Query("coordinate") coordinate: String,
-        @Query("radius") radius: Int = 1000,
-        @Query("display") display: Int = 10
+        @Query("radius") radius: Int
     ): Call<NaverSearchResponse>
 }
+

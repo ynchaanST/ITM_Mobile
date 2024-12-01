@@ -1,56 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="16dp">
 
-    <LinearLayout
+    <androidx.cardview.widget.CardView
+        android:id="@+id/restaurant_info_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_margin="16dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp">
 
-        <!-- 식당 이름 입력 -->
-        <EditText
-            android:id="@+id/restaurant_name_edit_text"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="식당 이름" />
+            android:orientation="vertical"
+            android:padding="16dp">
 
-        <!-- 나머지 입력 필드들 -->
-        <EditText
-            android:id="@+id/menu_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="메뉴" />
+            <!-- Title with Icon -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
 
-        <EditText
-            android:id="@+id/amount_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="금액"
-            android:inputType="numberDecimal" />
+                <ImageView
+                    android:id="@+id/restaurant_icon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:contentDescription="@string/restaurant_icon"
+                    android:src="@drawable/ic_restaurant"
+                    android:layout_gravity="center" />
 
-        <RatingBar
-            android:id="@+id/rating_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:numStars="5"
-            android:stepSize="0.5" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/restaurant_info"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
 
-        <EditText
-            android:id="@+id/michelin_stars_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="미슐랭 스타 개수"
-            android:inputType="number" />
+            <!-- Restaurant Name -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/restaurant_name"
+                android:textSize="14sp"
+                android:layout_marginTop="16dp"
+                android:textColor="#000000" />
 
-        <EditText
-            android:id="@+id/visit_count_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="방문 횟수"
-            android:inputType="number" />
+            <EditText
+                android:id="@+id/input_restaurant_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_enter_restaurant_name"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/edittext_background"
+                android:padding="12dp"
+                android:enabled="false" />
 
-    </LinearLayout>
+            <!-- Menu -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/menu"
+                android:textSize="14sp"
+                android:layout_marginTop="16dp"
+                android:textColor="#000000" />
+
+            <EditText
+                android:id="@+id/input_menu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_enter_menu"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/edittext_background"
+                android:padding="12dp" />
+
+            <!-- Price -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/amount_spent"
+                android:textSize="14sp"
+                android:layout_marginTop="16dp"
+                android:textColor="#000000" />
+
+            <EditText
+                android:id="@+id/input_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_enter_price"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/edittext_background"
+                android:padding="12dp"
+                android:inputType="numberDecimal" />
+
+            <!-- Rating -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mychelin_stars"
+                android:textSize="14sp"
+                android:layout_marginTop="16dp"
+                android:textColor="#000000" />
+
+            <RatingBar
+                android:id="@+id/rating_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="3"
+                android:stepSize="1"
+                android:layout_marginTop="8dp" />
+
+            <!-- Visit Count -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/visit_count"
+                android:textSize="14sp"
+                android:layout_marginTop="16dp"
+                android:textColor="#000000" />
+
+            <EditText
+                android:id="@+id/input_visit_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_enter_visit_count"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/edittext_background"
+                android:padding="12dp"
+                android:inputType="number" />
+
+            <!-- Total Spent -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/total_spent"
+                android:textSize="14sp"
+                android:layout_marginTop="16dp"
+                android:textColor="#000000" />
+
+            <EditText
+                android:id="@+id/input_total_spent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_total_spent"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/edittext_background"
+                android:padding="12dp"
+                android:enabled="false" />
+
+            <!-- Submit Button -->
+            <Button
+                android:id="@+id/submit_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="#8B0000"
+                android:text="@string/submit"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
 </ScrollView>

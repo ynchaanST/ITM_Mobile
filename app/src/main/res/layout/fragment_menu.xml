@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:text="Mychelin Guide"
         android:textColor="@android:color/white"
         android:textSize="24sp"
@@ -28,27 +28,11 @@
         android:scaleType="fitCenter"
         android:padding="8dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toStartOf="@id/btnSettings"
-        app:layout_constraintTop_toTopOf="@id/titleText"
-        app:layout_constraintBottom_toBottomOf="@id/titleText"
-        android:contentDescription="go to Notice"
-        app:tint="@null"
-        tools:visibility="visible" />
-
-    <ImageButton
-        android:id="@+id/btnSettings"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
         android:layout_marginEnd="16dp"
-        android:scaleType="fitCenter"
-        android:padding="8dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/icon_settings"
-        app:layout_constraintBottom_toBottomOf="@id/titleText"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/titleText"
-        android:contentDescription="go to Settings"
+        app:layout_constraintBottom_toBottomOf="@id/titleText"
+        app:layout_constraintRight_toRightOf="parent"
+        android:contentDescription="go to Notice"
         app:tint="@null"
         tools:visibility="visible" />
 
@@ -88,7 +72,48 @@
         android:scaleType="fitCenter"
         android:src="@drawable/rating_std"
         app:layout_constraintTop_toBottomOf="@id/announcementLayout"
-        app:layout_constraintBottom_toTopOf="@id/supportLayout" />
+        app:layout_constraintBottom_toTopOf="@id/ratingBtnLayout" />
+
+    <LinearLayout
+        android:id="@+id/ratingBtnLayout"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_margin="16dp"
+        android:background="@android:color/white"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/supportLayout">
+
+        <ImageButton
+            android:id="@+id/btn1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+
+            android:layout_margin="8dp"
+            android:background="@drawable/rating_btn_1"
+            android:contentDescription="Rating Button 1" />
+
+        <ImageButton
+            android:id="@+id/btn2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+
+            android:layout_margin="8dp"
+            android:background="@drawable/rating_btn_2"
+            android:contentDescription="Rating Button 2" />
+
+        <ImageButton
+            android:id="@+id/btn3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+
+            android:layout_margin="8dp"
+            android:background="@drawable/rating_btn_3"
+            android:contentDescription="Rating Button 3" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/supportLayout"
@@ -112,7 +137,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:columnCount="2"
-            android:rowCount="2">
+            android:rowCount="1">
 
             <Button
                 android:id="@+id/btnFrequentQna"
@@ -133,27 +158,16 @@
                 android:backgroundTint="#E0E0E0"
                 android:text="Application Info"
                 android:textColor="@android:color/black" />
-
-            <Button
-                android:id="@+id/btnNoticeLink"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_margin="4dp"
-                android:backgroundTint="#E0E0E0"
-                android:text="Service Notice"
-                android:textColor="@android:color/black" />
-
-            <Button
-                android:id="@+id/btnBugReport"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_margin="4dp"
-                android:backgroundTint="#E0E0E0"
-                android:text="Bug Report"
-                android:textColor="@android:color/black" />
         </GridLayout>
+        <Button
+            android:id="@+id/btnReport"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#E0E0E0"
+            android:text="Bug Report"
+            android:textColor="@android:color/black" />
     </LinearLayout>
 
     <TextView
@@ -161,9 +175,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=" "
-        android:padding="10dp"
+        android:padding="40dp"
         android:layout_margin="20dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
         android:layout_marginBottom="30dp"
         android:background="#600B04"
         app:layout_constraintBottom_toBottomOf="parent"/>

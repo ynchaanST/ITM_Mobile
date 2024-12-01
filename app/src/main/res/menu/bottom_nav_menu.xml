@@ -16,9 +16,9 @@
         android:title="@string/home"
         android:visible="true" />
     <item
-        android:id="@+id/menu_booking"
-        android:icon="@drawable/icon_booking"
-        android:title="@string/booking"
+        android:id="@+id/menu_reservation"
+        android:icon="@drawable/icon_reservation"
+        android:title="@string/reservation"
         android:visible="true" />
     <item
         android:id="@+id/menu_profile"
