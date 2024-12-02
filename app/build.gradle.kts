@@ -7,6 +7,9 @@ plugins {
 android {
     namespace = "com.example.mychelin_page"
     compileSdk = 35
+    buildFeatures{
+        viewBinding=true
+    }
 
     defaultConfig {
         applicationId = "com.example.mychelin_page"
