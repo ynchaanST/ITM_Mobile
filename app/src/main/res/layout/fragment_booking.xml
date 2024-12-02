@@ -219,7 +219,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:backgroundTint="#600B04"
-            android:text="예약하기"
+            android:text="가능한 테이블 보기"
             android:textColor="@android:color/white"
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@id/bookingHeadcountCard"/>

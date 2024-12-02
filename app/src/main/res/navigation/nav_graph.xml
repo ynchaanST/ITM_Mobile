@@ -11,7 +11,11 @@
     <fragment
         android:id="@+id/menu_map"
         android:name="com.example.mychelin_page.SearchFragment"
-        android:label="search" />
+        android:label="search">
+        <action
+            android:id="@+id/action_menu_map_to_booking"
+            app:destination="@id/page_booking" />
+    </fragment>
     <fragment
         android:id="@+id/menu_home"
         android:name="com.example.mychelin_page.HomeFragment"
@@ -19,7 +23,12 @@
     <fragment
         android:id="@+id/menu_reservation"
         android:name="com.example.mychelin_page.ReservationFragment"
-        android:label="reservation" />
+        android:label="reservation">
+        <!-- 예약 프래그먼트에서 ReservationItemFragment로 이동 -->
+        <action
+            android:id="@+id/action_reservation_to_reservationItem"
+            app:destination="@id/reservationItemFragment" />
+    </fragment>
     <fragment
         android:id="@+id/menu_profile"
         android:name="com.example.mychelin_page.ProfileFragment"
@@ -28,7 +37,11 @@
     <fragment
         android:id="@+id/page_booking"
         android:name="com.example.mychelin_page.BookingFragment"
-        android:label="booking" />
+        android:label="booking">
+        <action
+            android:id="@+id/action_booking_to_restaurant_table"
+            app:destination="@id/page_restaurant_table" />
+    </fragment>
     <fragment
         android:id="@+id/page_notice"
         android:name="com.example.mychelin_page.NoticeFragment"
@@ -37,5 +50,23 @@
         android:id="@+id/page_report"
         android:name="com.example.mychelin_page.ReportFragment"
         android:label="report" />
+
+    <fragment
+        android:id="@+id/page_restaurant_table"
+        android:name="com.example.mychelin_page.RestaurantTableFragment"
+        android:label="RestaurantTableFragment">
+        <action
+            android:id="@+id/action_restaurantTable_to_reservation"
+            app:destination="@id/menu_reservation" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/reservationItemFragment"
+        android:name="com.example.mychelin_page.ReservationItemFragment"
+        android:label="Reservation Item">
+        <argument
+            android:name="reservationId"
+            app:argType="string" />
+    </fragment>
 
 </navigation>

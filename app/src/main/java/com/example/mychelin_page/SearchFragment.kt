@@ -18,7 +18,9 @@ import android.widget.RatingBar
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.naver.maps.geometry.LatLng
@@ -209,7 +211,8 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
             }
             .setNegativeButton("예약") { _, _ ->
                 // 예약 버튼 클릭 시 Toast 메시지 표시
-                Toast.makeText(requireContext(), "아직 예약 정보 구현이 되지 않았습니다.", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(requireContext(), "아직 예약 정보 구현이 되지 않았습니다.", Toast.LENGTH_SHORT).show()
+                navigateToTableSelection(restaurantName, latLng)
             }
             .create()
 
@@ -346,6 +349,42 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
+    }
+
+    private fun navigateToTableSelection(restaurantName: String, latLng: LatLng) {
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("restaurants")
+            .whereEqualTo("name", restaurantName)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    val restaurant = documents.documents[0]
+                    val restaurantId = restaurant.id
+
+                    findNavController().navigate(
+                        R.id.action_menu_map_to_booking,
+                        bundleOf(
+                            "restaurantId" to restaurantId,
+                            "restaurantName" to restaurantName
+                        )
+                    )
+                } else {
+                    // 레스토랑을 찾지 못한 경우 예약 불가 메시지 표시
+                    Toast.makeText(
+                        context,
+                        "현재 예약이 불가능한 레스토랑입니다.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(
+                    context,
+                    "레스토랑 정보 조회 실패: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
     }
 
     private fun clearAllMarkers() {

@@ -14,58 +14,110 @@ import android.widget.TimePicker
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import java.util.Calendar
+import android.content.Context
+import androidx.navigation.fragment.findNavController
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
+import java.util.concurrent.TimeUnit
 
 class BookingFragment : Fragment(R.layout.fragment_booking) {
+    private val db = FirebaseFirestore.getInstance()
+    private val auth = FirebaseAuth.getInstance()
+    private lateinit var workManager: WorkManager
+
+    // UI 컴포넌트들
     private lateinit var restaurantImage: ImageView
     private lateinit var restaurantNameText: TextView
     private lateinit var restaurantRating: RatingBar
     private lateinit var restaurantAddressText: TextView
-
     private lateinit var calendarView: CalendarView
     private lateinit var timePicker: TimePicker
-
-    private lateinit var decreaseAdults: ImageButton
-    private lateinit var increaseAdults: ImageButton
     private lateinit var adultCount: TextView
-
     private lateinit var requestEditText: EditText
     private lateinit var bookingButton: Button
+    private lateinit var decreaseAdults: ImageButton
+    private lateinit var increaseAdults: ImageButton
 
     private var currentAdults = 2
-    private var selectedDate: Long = 0
-    private var selectedTime: String = ""
+    private lateinit var selectedDate: Calendar
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // View 초기화
+        workManager = WorkManager.getInstance(requireContext())
         initViews(view)
-
-        // 인원 조절 버튼 리스너 설정
         setupHeadcountListeners()
-
-        // 예약 버튼 리스너 설정
         setupBookingButtonListener()
 
-        // 기본 데이터 설정
-        setDefaultData()
+        // 레스토랑 정보 로드
+        val restaurantId = arguments?.getString("restaurantId")
+        val tableNumber = arguments?.getInt("tableNumber") ?: 0
+
+        if (restaurantId != null) {
+            loadRestaurantInfo(restaurantId)
+        }
+
+        // 캘린더 설정 수정
+        setupCalendar()
     }
+
+    private fun setupCalendar() {
+        val today = Calendar.getInstance() // 현재 시간을 그대로 사용
+        selectedDate = Calendar.getInstance() // 초기값은 오늘 날짜
+
+        val maxDate = Calendar.getInstance().apply {
+            add(Calendar.MONTH, 1) // 1개월 후까지 예약 가능
+        }
+
+        calendarView.minDate = today.timeInMillis
+        calendarView.maxDate = maxDate.timeInMillis
+        calendarView.date = today.timeInMillis
+
+        calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
+            selectedDate.set(year, month, dayOfMonth) // 선택한 날짜 업데이트
+        }
+    }
+
 
     private fun initViews(view: View) {
         restaurantImage = view.findViewById(R.id.restaurantImage)
         restaurantNameText = view.findViewById(R.id.restaurantNameText)
         restaurantRating = view.findViewById(R.id.restaurantRating)
         restaurantAddressText = view.findViewById(R.id.restaurantAddressText)
-
         calendarView = view.findViewById(R.id.calendarView)
         timePicker = view.findViewById(R.id.timePicker)
-
         decreaseAdults = view.findViewById(R.id.decreaseAdults)
         increaseAdults = view.findViewById(R.id.increaseAdults)
         adultCount = view.findViewById(R.id.adultCount)
-
         requestEditText = view.findViewById(R.id.requestEditText)
         bookingButton = view.findViewById(R.id.bookingButton)
+    }
+
+    private fun loadRestaurantInfo(restaurantId: String) {
+        db.collection("restaurants")
+            .document(restaurantId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    val name = document.getString("name") ?: ""
+                    val address = document.getString("road_address") ?: ""
+                    val rating = document.getDouble("rating") ?: 0.0
+
+                    restaurantNameText.text = name
+                    restaurantAddressText.text = address
+                    restaurantRating.rating = rating.toFloat()
+
+                    // 이미지는 기본 이미지 사용
+                    restaurantImage.setImageResource(R.drawable.ic_restaurant)
+                }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(context, "레스토랑 정보 로드 실패: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun setupHeadcountListeners() {
@@ -86,67 +138,143 @@ class BookingFragment : Fragment(R.layout.fragment_booking) {
 
     private fun setupBookingButtonListener() {
         bookingButton.setOnClickListener {
-            // 예약 가능 여부 체크 및 예약 로직
-            val selectedDate = calendarView.date
-            val selectedHour = timePicker.hour
-            val selectedMinute = timePicker.minute
-            val specialRequest = requestEditText.text.toString()
+            val restaurantId = arguments?.getString("restaurantId")
+            val tableNumber = arguments?.getInt("tableNumber")
 
-            // 유효성 검사 및 예약 처리
-            if (validateBooking(selectedDate, selectedHour, selectedMinute)) {
-                performBooking(selectedDate, selectedHour, selectedMinute, currentAdults, specialRequest)
+            if (restaurantId == null || tableNumber == null) {
+                Toast.makeText(context, "예약 정보가 올바르지 않습니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
+
+            val currentTime = Calendar.getInstance() // 현재 시간
+            val selectedTime = selectedDate.apply {
+                set(Calendar.HOUR_OF_DAY, timePicker.hour)
+                set(Calendar.MINUTE, timePicker.minute)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }
+
+            // 영업 시간 체크
+            if (timePicker.hour < 10 || timePicker.hour >= 22) {
+                Toast.makeText(context, "예약 가능 시간은 오전 10시부터 오후 10시까지입니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // 선택된 시간이 현재 시간보다 이전인지 확인
+            if (isSameDate(selectedTime, currentTime)) {
+                // 같은 날이라면 시간 비교
+                if (selectedTime.timeInMillis < currentTime.timeInMillis) {
+                    Toast.makeText(context, "현재 시간 이후로 예약해주세요.", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+            }
+
+            // 예약 생성
+            val bundle = Bundle().apply {
+                putString("restaurantId", restaurantId)
+                putLong("selectedDate", selectedDate.timeInMillis)
+                putInt("selectedHour", timePicker.hour)
+                putInt("selectedMinute", timePicker.minute)
+                putInt("numberOfGuests", currentAdults)
+                putString("specialRequests", requestEditText.text.toString())
+            }
+
+            findNavController().navigate(R.id.action_booking_to_restaurant_table, bundle)
         }
     }
 
-    private fun validateBooking(date: Long, hour: Int, minute: Int): Boolean {
-        val currentTime = Calendar.getInstance()
-        val selectedTime = Calendar.getInstance().apply {
-            timeInMillis = date
-            set(Calendar.HOUR_OF_DAY, hour)
-            set(Calendar.MINUTE, minute)
+
+    private fun isSameDate(cal1: Calendar, cal2: Calendar): Boolean {
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
+                cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH)
+    }
+    // 나머지 메서드들은 동일...
+    private fun createReservation(
+        restaurantId: String,
+        tableNumber: Int,
+        reservationDate: Long,
+        numberOfGuests: Int,
+        specialRequests: String
+    ) {
+        val userId = auth.currentUser?.uid
+        if (userId == null) {
+            Toast.makeText(context, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+            return
         }
 
-        // 현재 시간 이후인지 확인
-        return if (selectedTime.after(currentTime)) {
-            true
-        } else {
-            Toast.makeText(requireContext(), "유효하지 않은 날짜와 시간입니다.", Toast.LENGTH_SHORT).show()
-            false
-        }
+        // Firestore에 예약 정보 저장
+        db.collection("restaurants").document(restaurantId).get()
+            .addOnSuccessListener { restaurantDoc ->
+                val restaurantName = restaurantDoc.getString("name") ?: ""
+                val restaurantAddress = restaurantDoc.getString("road_address") ?: ""
+
+                val reservation = hashMapOf(
+                    "restaurantId" to restaurantId,
+                    "restaurantName" to restaurantName,
+                    "restaurantAddress" to restaurantAddress,
+                    "userId" to userId,
+                    "tableNumber" to tableNumber,
+                    "reservationDate" to reservationDate,
+                    "numberOfGuests" to numberOfGuests,
+                    "specialRequests" to specialRequests,
+                    "status" to "CONFIRMED",
+                    "createdAt" to FieldValue.serverTimestamp()
+                )
+
+                db.collection("users")
+                    .document(userId)
+                    .collection("reservationData")
+                    .add(reservation)
+                    .addOnSuccessListener { documentReference ->
+                        updateTableStatus(restaurantId, tableNumber, false)
+                        scheduleReservationNotification(
+                            documentReference.id,
+                            restaurantName,
+                            reservationDate
+                        )
+
+                        Toast.makeText(context, "예약이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                        findNavController().navigate(R.id.menu_reservation)
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(context, "예약 실패: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+            }
     }
 
-    private fun performBooking(date: Long, hour: Int, minute: Int, guests: Int, specialRequest: String) {
-        // 실제 예약 처리 로직 (서버 통신, 데이터베이스 저장 등)
-        Toast.makeText(
-            requireContext(),
-            "예약이 완료되었습니다.\n" +
-                    "날짜: ${formatDate(date)}\n" +
-                    "시간: $hour:$minute\n" +
-                    "인원: $guests 명\n" +
-                    "요청사항: $specialRequest",
-            Toast.LENGTH_LONG
-        ).show()
+    private fun updateTableStatus(restaurantId: String, tableNumber: Int, isAvailable: Boolean) {
+        db.collection("restaurants")
+            .document(restaurantId)
+            .collection("tables")
+            .whereEqualTo("tableNumber", tableNumber)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    val tableDoc = documents.documents[0]
+                    tableDoc.reference.update("isAvailable", isAvailable)
+                }
+            }
     }
 
-    private fun formatDate(timeInMillis: Long): String {
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = timeInMillis
-        return "${calendar.get(Calendar.YEAR)}년 " +
-                "${calendar.get(Calendar.MONTH) + 1}월 " +
-                "${calendar.get(Calendar.DAY_OF_MONTH)}일"
-    }
+    private fun scheduleReservationNotification(
+        reservationId: String,
+        restaurantName: String,
+        reservationDate: Long
+    ) {
+        val notificationWork = OneTimeWorkRequestBuilder<ReservationNotificationWorker>()
+            .setInitialDelay(
+                reservationDate - System.currentTimeMillis() - 3600000, // 1시간 전
+                TimeUnit.MILLISECONDS
+            )
+            .setInputData(
+                workDataOf(
+                    "reservationId" to reservationId,
+                    "restaurantName" to restaurantName
+                )
+            )
+            .build()
 
-    private fun setDefaultData() {
-        // 식당 정보 기본값 설정
-        restaurantNameText.text = "음식점 기본값"
-        restaurantRating.rating = 4.5f
-        restaurantAddressText.text = "음식점 주소 기본값"
-
-        // 캘린더 초기 설정
-        calendarView.minDate = Calendar.getInstance().timeInMillis
-        calendarView.maxDate = Calendar.getInstance().apply {
-            add(Calendar.MONTH, 3)
-        }.timeInMillis
+        workManager.enqueue(notificationWork)
     }
 }

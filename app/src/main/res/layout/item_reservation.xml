@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    android:background="#600B04">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- 레스토랑 이름 -->
+        <TextView
+            android:id="@+id/restaurantNameText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="레스토랑 이름"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black" />
+
+        <!-- 예약 날짜와 시간 -->
+        <TextView
+            android:id="@+id/reservationDateTimeText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="예약 일시: 2024년 12월 01일 19:00"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="8dp" />
+
+        <!-- 인원 -->
+        <TextView
+            android:id="@+id/guestsText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="인원: 성인 4명"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="4dp" />
+
+        <!-- 예약 상태 -->
+        <TextView
+            android:id="@+id/reservationStatusText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="상태: CONFIRMED"
+            android:textSize="14sp"
+            android:textColor="#FFD700"
+            android:layout_marginTop="4dp" />
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
