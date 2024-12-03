@@ -1,9 +1,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.Mychelin_Page" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-    </style>
+    <!-- 기존 테마 유지 -->
+    <style name="Theme.Mychelin_Page" parent="Theme.Material3.DayNight.NoActionBar"/>
 
-    <style name="Theme.Mychelin_Page" parent="Base.Theme.Mychelin_Page" />
+    <!-- 스플래시 스크린 테마 추가 -->
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#3A3A3A</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/mychelin_logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.Mychelin_Page</item>
+    </style>
 </resources>
