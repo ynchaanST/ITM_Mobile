@@ -33,6 +33,10 @@ class HomeFragment : Fragment() {
     private lateinit var textViewMostVisitedRestaurantName: TextView
     private lateinit var textViewMostVisitedRestaurantCount: TextView
 
+    // Most spent restaurant 관련 변수
+    private lateinit var textViewMostSpentRestaurantName: TextView
+    private lateinit var textViewMostSpentRestaurantTotal: TextView
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,12 +57,17 @@ class HomeFragment : Fragment() {
         textViewMostVisitedRestaurantName = view.findViewById(R.id.most_visited_restaurant_name)
         textViewMostVisitedRestaurantCount = view.findViewById(R.id.most_visited_restaurant_count)
 
+        // Most Spent Restaurant View 연결
+        textViewMostSpentRestaurantName = view.findViewById(R.id.most_spent_restaurant_name)
+        textViewMostSpentRestaurantTotal = view.findViewById(R.id.most_spent_restaurant_total)
+
         // 날씨 정보 가져오기
         getWeather()
 
         // Firestore에서 식당 정보 가져오기
         fetchTopRatedRestaurant()
         fetchMostVisitedRestaurant()
+        fetchMostSpentRestaurant()
 
         return view
     }
@@ -105,12 +114,11 @@ class HomeFragment : Fragment() {
 
         db.collection("users").get().addOnSuccessListener { userDocuments ->
             var topRestaurantName: String? = null
-            var highestRating = Double.MIN_VALUE // null 대신 Double.MIN_VALUE 사용
+            var highestRating = Double.MIN_VALUE
 
             for (userDocument in userDocuments) {
                 val userId = userDocument.id
 
-                // 각 사용자의 visitData 서브컬렉션 가져오기
                 db.collection("users").document(userId).collection("visitData")
                     .get()
                     .addOnSuccessListener { visitDataDocuments ->
@@ -126,18 +134,10 @@ class HomeFragment : Fragment() {
                             }
                         }
 
-                        // UI 업데이트
                         textViewTopRestaurantName.text = topRestaurantName ?: "No data"
-                        textViewTopRestaurantRating.text = "Rating: ${highestRating}"
-                    }
-                    .addOnFailureListener { e ->
-                        println("Error fetching visitData: ${e.message}")
+                        textViewTopRestaurantRating.text = "Rating: $highestRating"
                     }
             }
-        }.addOnFailureListener { e ->
-            println("Error fetching users: ${e.message}")
-            textViewTopRestaurantName.text = "Failed to load data"
-            textViewTopRestaurantRating.text = ""
         }
     }
 
@@ -150,7 +150,6 @@ class HomeFragment : Fragment() {
             for (userDocument in userDocuments) {
                 val userId = userDocument.id
 
-                // 각 사용자의 visitData 서브컬렉션 가져오기
                 db.collection("users").document(userId).collection("visitData")
                     .get()
                     .addOnSuccessListener { visitDataDocuments ->
@@ -163,23 +162,46 @@ class HomeFragment : Fragment() {
                             }
                         }
 
-                        // 가장 방문 횟수가 많은 식당 찾기
                         val mostVisitedRestaurant = visitCounts.maxByOrNull { it.value }
                         val mostVisitedName = mostVisitedRestaurant?.key ?: "No data"
                         val mostVisitedCount = mostVisitedRestaurant?.value ?: 0
 
-                        // UI 업데이트
                         textViewMostVisitedRestaurantName.text = mostVisitedName
                         textViewMostVisitedRestaurantCount.text = "Visits: $mostVisitedCount"
                     }
-                    .addOnFailureListener { e ->
-                        println("Error fetching visitData: ${e.message}")
+            }
+        }
+    }
+
+    private fun fetchMostSpentRestaurant() {
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("users").get().addOnSuccessListener { userDocuments ->
+            val totalSpentMap = mutableMapOf<String, Int>()
+
+            for (userDocument in userDocuments) {
+                val userId = userDocument.id
+
+                db.collection("users").document(userId).collection("visitData")
+                    .get()
+                    .addOnSuccessListener { visitDataDocuments ->
+                        for (visitDataDocument in visitDataDocuments) {
+                            val restaurantName = visitDataDocument.getString("restaurantName")
+                            val totalSpent = visitDataDocument.getLong("totalSpent")?.toInt() ?: 0
+
+                            if (restaurantName != null) {
+                                totalSpentMap[restaurantName] = totalSpentMap.getOrDefault(restaurantName, 0) + totalSpent
+                            }
+                        }
+
+                        val mostSpentRestaurant = totalSpentMap.maxByOrNull { it.value }
+                        val mostSpentName = mostSpentRestaurant?.key ?: "No data"
+                        val mostSpentTotal = mostSpentRestaurant?.value ?: 0
+
+                        textViewMostSpentRestaurantName.text = mostSpentName
+                        textViewMostSpentRestaurantTotal.text = "Total Spent: $mostSpentTotal"
                     }
             }
-        }.addOnFailureListener { e ->
-            println("Error fetching users: ${e.message}")
-            textViewMostVisitedRestaurantName.text = "Failed to load data"
-            textViewMostVisitedRestaurantCount.text = ""
         }
     }
 }
