@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.FirebaseFirestore
@@ -27,7 +28,7 @@ class HomeFragment : Fragment() {
 
     // Top rated restaurant 관련 변수
     private lateinit var textViewTopRestaurantName: TextView
-    private lateinit var textViewTopRestaurantRating: TextView
+    private lateinit var topRestaurantStarsContainer: LinearLayout
 
     // Most visited restaurant 관련 변수
     private lateinit var textViewMostVisitedRestaurantName: TextView
@@ -51,7 +52,7 @@ class HomeFragment : Fragment() {
 
         // Top Rated Restaurant View 연결
         textViewTopRestaurantName = view.findViewById(R.id.top_restaurant_name)
-        textViewTopRestaurantRating = view.findViewById(R.id.top_restaurant_rating)
+        topRestaurantStarsContainer = view.findViewById(R.id.top_restaurant_rating_stars)
 
         // Most Visited Restaurant View 연결
         textViewMostVisitedRestaurantName = view.findViewById(R.id.most_visited_restaurant_name)
@@ -64,7 +65,7 @@ class HomeFragment : Fragment() {
         // 날씨 정보 가져오기
         getWeather()
 
-        // Firestore에서 식당 정보 가져오기
+        // Firestore에서 데이터 가져오기
         fetchTopRatedRestaurant()
         fetchMostVisitedRestaurant()
         fetchMostSpentRestaurant()
@@ -88,7 +89,8 @@ class HomeFragment : Fragment() {
                     if (weatherResponse != null) {
                         textViewWeatherDescription.text = weatherResponse.weather[0].description.capitalize()
                         textViewTemperature.text = "${weatherResponse.main.temp} °C"
-                        textViewWeatherDate.text = SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault()).format(Date())
+                        textViewWeatherDate.text =
+                            SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault()).format(Date())
 
                         // 날씨 상태에 따른 아이콘 설정
                         when (weatherResponse.weather[0].description.toLowerCase()) {
@@ -114,7 +116,7 @@ class HomeFragment : Fragment() {
 
         db.collection("users").get().addOnSuccessListener { userDocuments ->
             var topRestaurantName: String? = null
-            var highestRating = Double.MIN_VALUE
+            var highestRating = 0.0
 
             for (userDocument in userDocuments) {
                 val userId = userDocument.id
@@ -134,8 +136,9 @@ class HomeFragment : Fragment() {
                             }
                         }
 
+                        // UI 업데이트
                         textViewTopRestaurantName.text = topRestaurantName ?: "No data"
-                        textViewTopRestaurantRating.text = "Rating: $highestRating"
+                        displayStars(highestRating)
                     }
             }
         }
@@ -190,7 +193,8 @@ class HomeFragment : Fragment() {
                             val totalSpent = visitDataDocument.getLong("totalSpent")?.toInt() ?: 0
 
                             if (restaurantName != null) {
-                                totalSpentMap[restaurantName] = totalSpentMap.getOrDefault(restaurantName, 0) + totalSpent
+                                totalSpentMap[restaurantName] =
+                                    totalSpentMap.getOrDefault(restaurantName, 0) + totalSpent
                             }
                         }
 
@@ -202,6 +206,25 @@ class HomeFragment : Fragment() {
                         textViewMostSpentRestaurantTotal.text = "Total Spent: $mostSpentTotal"
                     }
             }
+        }
+    }
+
+    private fun displayStars(rating: Double) {
+        // 별 아이콘을 초기화
+        topRestaurantStarsContainer.removeAllViews()
+
+        // 별점에 따라 별 추가
+        val fullStars = rating.toInt()
+        for (i in 0 until fullStars) {
+            val star = ImageView(requireContext())
+            star.setImageResource(R.drawable.ic_star_wine) // 와인색 별 이미지 리소스
+            star.layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                setMargins(8, 0, 8, 0) // 별 간 간격
+            }
+            topRestaurantStarsContainer.addView(star)
         }
     }
 }

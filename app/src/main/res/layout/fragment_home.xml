@@ -114,14 +114,13 @@
                     android:textSize="16sp"
                     android:textColor="#666666" />
 
-                <TextView
-                    android:id="@+id/top_restaurant_rating"
+                <!-- 와인색 별로 별점 표시 -->
+                <LinearLayout
+                    android:id="@+id/top_restaurant_rating_stars"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Rating: 0.0"
-                    android:textSize="16sp"
-                    android:textColor="#666666" />
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp" />
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
