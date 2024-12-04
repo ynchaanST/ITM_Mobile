@@ -72,4 +72,6 @@ dependencies {
 //    implementation("org.osgeo.proj4j:proj4j:1.5.1")
 //    implementation (libs.proj4j)
 
+    // 스플래시 스크린
+    implementation ("androidx.core:core-splashscreen:1.0.1")
 }

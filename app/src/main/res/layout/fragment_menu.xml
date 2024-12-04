@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#600B04">
+    android:background="#F5E1C1">
 
     <TextView
         android:id="@+id/titleText"
@@ -14,7 +14,7 @@
         android:layout_marginStart="48dp"
         android:layout_marginTop="32dp"
         android:text="Mychelin Guide"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@android:color/white"
+        android:background="@drawable/rounded_background"
         android:padding="6dp"
         android:layout_margin="16dp"
         app:layout_constraintTop_toBottomOf="@id/titleText">
@@ -79,7 +79,7 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_margin="16dp"
-        android:background="@android:color/white"
+        android:background="@drawable/rounded_background"
         android:orientation="horizontal"
         android:padding="4dp"
         app:layout_constraintBottom_toTopOf="@+id/supportLayout">
@@ -120,7 +120,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:background="@android:color/white"
+        android:background="@drawable/rounded_background"
         android:orientation="vertical"
         android:padding="16dp"
         app:layout_constraintBottom_toTopOf="@+id/emptyLayout">
@@ -156,7 +156,7 @@
                 android:layout_columnWeight="1"
                 android:layout_margin="4dp"
                 android:backgroundTint="#E0E0E0"
-                android:text="Application Info"
+                android:text="App Info"
                 android:textColor="@android:color/black" />
         </GridLayout>
         <Button
@@ -179,7 +179,7 @@
         android:layout_margin="20dp"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="30dp"
-        android:background="#600B04"
+        android:background="#F5E1C1"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

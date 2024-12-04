@@ -23,7 +23,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Mychelin_Page">
+        android:theme="@style/Theme.App.Starting">
+    <!--        android:theme="@style/Theme.Mychelin_Page">-->
 
         <!-- Login Activity as Launcher Activity -->
         <activity android:name=".LoginActivity" android:exported="true">
@@ -34,7 +35,8 @@
         </activity>
 
         <!-- Main Activity -->
-        <activity android:name=".MainActivity" android:exported="true" />
+        <activity android:name=".MainActivity" android:exported="true"
+            android:theme="@style/Theme.Mychelin_Page"/>
 
         <!-- Register Activity -->
         <activity android:name=".RegisterActivity" android:exported="true" />
