@@ -36,13 +36,25 @@
             android:clickable="true"
             android:focusable="true" />
 
+        <!-- 텍스트: Change Profile Picture -->
+        <TextView
+            android:id="@+id/change_profile_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/change_profile_picture"
+            android:textColor="#8B0000"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
         <!-- 이름 입력 필드 -->
         <EditText
             android:id="@+id/edit_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:hint="Enter your name"
+            android:hint="@string/name_hint"
             android:inputType="textPersonName"
             android:padding="12dp"
             android:backgroundTint="#8B0000"
@@ -55,20 +67,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:hint="Enter your email"
+            android:hint="@string/email_hint"
             android:inputType="textEmailAddress"
             android:padding="12dp"
             android:backgroundTint="#8B0000"
             android:textColor="@android:color/black"
-            android:textColorHint="#8B0000" />
+            android:textColorHint="#8B0000"
+            android:autofillHints="emailAddress" />
 
-        <!-- 현재 비밀번호 입력 필드 -->
+        <!-- 비밀번호 입력 필드 -->
         <EditText
-            android:id="@+id/edit_current_password"
+            android:id="@+id/edit_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:hint="Enter current password"
+            android:layout_marginBottom="24dp"
+            android:hint="@string/password_hint"
             android:inputType="textPassword"
             android:padding="12dp"
             android:backgroundTint="#8B0000"
@@ -80,11 +93,12 @@
             android:id="@+id/save_changes_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Save Changes"
+            android:text="@string/save_changes"
             android:textColor="@android:color/white"
             android:backgroundTint="#8B0000"
             android:padding="12dp" />
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
