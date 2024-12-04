@@ -74,4 +74,7 @@ dependencies {
 
     // 스플래시 스크린
     implementation ("androidx.core:core-splashscreen:1.0.1")
+    // Glide for image loading
+    implementation (libs.glide)
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
 }
