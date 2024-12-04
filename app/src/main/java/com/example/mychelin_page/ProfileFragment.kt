@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 
 class ProfileFragment : Fragment() {
@@ -20,6 +21,9 @@ class ProfileFragment : Fragment() {
     private lateinit var nameTextView: TextView
     private lateinit var profileImageView: ImageView
     private lateinit var settingsIcon: ImageView
+    private lateinit var recentActivityRestaurantName: TextView
+    private lateinit var recentActivityDate: TextView
+    private lateinit var recentActivityMenu: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,9 +39,15 @@ class ProfileFragment : Fragment() {
         nameTextView = view.findViewById(R.id.profile_name)
         profileImageView = view.findViewById(R.id.profile_image)
         settingsIcon = view.findViewById(R.id.settings_icon)
+        recentActivityRestaurantName = view.findViewById(R.id.card1_restaurant_name)
+        recentActivityDate = view.findViewById(R.id.card1_content)
+        recentActivityMenu = view.findViewById(R.id.card1_menu)
 
         // 사용자 데이터 로드
         loadProfileData()
+
+        // Recent Activity 데이터 로드
+        loadRecentActivity()
 
         // Settings 버튼 클릭 리스너 설정
         setupSettingsButton()
@@ -76,6 +86,40 @@ class ProfileFragment : Fragment() {
             // 사용자 인증이 없는 경우
             Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun loadRecentActivity() {
+        val user = auth.currentUser
+        if (user == null) return
+
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("users").document(user.uid).collection("visitData")
+            .orderBy("lastVisitDate", com.google.firebase.firestore.Query.Direction.DESCENDING)
+            .limit(1)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    val document = documents.documents[0]
+                    val restaurantName = document.getString("restaurantName") ?: "No data"
+                    val lastVisitDate = document.getString("lastVisitDate") ?: "Unknown date"
+                    val menu = document.getString("menu") ?: "No menu data"
+
+                    // Recent Activity 데이터 업데이트
+                    recentActivityRestaurantName.text = restaurantName
+                    recentActivityDate.text = "Last visited: $lastVisitDate"
+                    recentActivityMenu.text = "Menu: $menu"
+                } else {
+                    recentActivityRestaurantName.text = "No recent activity"
+                    recentActivityDate.text = "-"
+                    recentActivityMenu.text = "-"
+                }
+            }
+            .addOnFailureListener {
+                recentActivityRestaurantName.text = "Failed to load"
+                recentActivityDate.text = "-"
+                recentActivityMenu.text = "-"
+            }
     }
 
     private fun setupSettingsButton() {
