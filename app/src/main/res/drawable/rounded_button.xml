@@ -3,15 +3,16 @@
     <item android:state_pressed="true">
         <!-- 버튼 눌렸을 때 -->
         <shape>
-            <solid android:color="#8B0000" /> <!-- 더 어두운 빨강 -->
-            <corners android:radius="8dp" />
+            <solid android:color="#8B0000" />
+            <corners android:radius="16dp" />
         </shape>
     </item>
+
     <item>
         <!-- 기본 버튼 상태 -->
         <shape>
             <solid android:color="#600B04" />
-            <corners android:radius="8dp" />
+            <corners android:radius="16dp" />
         </shape>
     </item>
 </selector>

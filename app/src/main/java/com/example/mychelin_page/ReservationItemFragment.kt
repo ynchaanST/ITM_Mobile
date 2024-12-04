@@ -50,8 +50,8 @@ class ReservationItemFragment : Fragment(R.layout.fragment_reservation_item) {
         bookingTimeText = view.findViewById(R.id.bookingTimeText)
         guestCountText = view.findViewById(R.id.guestCountText)
         requestEditText = view.findViewById(R.id.requestEditText)
-        reviseButton = view.findViewById(R.id.resReviseButton)
-        cancelButton = view.findViewById(R.id.resCancleButton)
+//        reviseButton = view.findViewById(R.id.resReviseButton)
+//        cancelButton = view.findViewById(R.id.resCancleButton)
         confirmButton = view.findViewById(R.id.resConfirmButton)
 
         // Confirm 버튼과 Revise 버튼 숨기기
