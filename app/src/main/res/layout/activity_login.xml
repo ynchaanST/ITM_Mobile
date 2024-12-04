@@ -90,6 +90,14 @@
             android:textStyle="bold"
             android:padding="8dp" />
 
+        <CheckBox
+            android:id="@+id/remember_me_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="로그인 정보 저장"
+            android:layout_marginTop="8dp"
+            android:textColor="#8B0000"/>
+
     </LinearLayout>
 
 </RelativeLayout>

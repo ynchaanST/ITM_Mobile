@@ -57,6 +57,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="16dp" />
 
+    <Button
+        android:id="@+id/sensor_mode_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="150dp"
+        android:text="센서 모드"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <!-- Filter Spinner -->
     <Spinner
         android:id="@+id/filter_spinner"

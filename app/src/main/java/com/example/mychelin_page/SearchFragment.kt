@@ -3,6 +3,8 @@ package com.example.mychelin_page
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.hardware.Sensor
+import android.hardware.SensorManager
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
@@ -33,8 +35,13 @@ import org.json.JSONObject
 import java.io.IOException
 import kotlin.math.pow
 import kotlin.math.sqrt
+import android.content.Context
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import com.naver.maps.geometry.LatLngBounds
+import kotlin.math.abs
 
-class SearchFragment : Fragment(), OnMapReadyCallback {
+class SearchFragment : Fragment(), OnMapReadyCallback, SensorEventListener {
 
     private lateinit var mapView: MapView
     private lateinit var naverMap: NaverMap
@@ -50,6 +57,20 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
     private lateinit var speechRecognizer: SpeechRecognizer
     private lateinit var speechRecognizerIntent: Intent
 
+    private lateinit var sensorManager: SensorManager
+    private var accelerometer: Sensor? = null
+    private var lastUpdate: Long = 0
+    private var lastX = 0f
+    private var lastY = 0f
+    private var lastZ = 0f
+    private val SHAKE_THRESHOLD = 1.5f
+    private val MAP_MOVE_SPEED = 1.0 // 지
+    private var isMapReady = false
+
+    private lateinit var sensorModeButton: Button
+    private var isSensorModeEnabled = false  // 센서 모드 상태 추적
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -58,10 +79,28 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_search, container, false)
 
+        sensorManager = requireActivity().getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+
         mapView = rootView.findViewById(R.id.map_view)
         searchBar = rootView.findViewById(R.id.search_bar)
         searchButton = rootView.findViewById(R.id.search_button)
         voiceSearchButton = rootView.findViewById(R.id.voice_search_button)
+        sensorModeButton = rootView.findViewById(R.id.sensor_mode_button)
+
+
+        sensorModeButton.setOnClickListener {
+            isSensorModeEnabled = !isSensorModeEnabled
+            if (isSensorModeEnabled) {
+                sensorModeButton.text = "센서 모드 OFF"
+                registerSensorListener()
+                Toast.makeText(context, "센서 모드가 활성화되었습니다", Toast.LENGTH_SHORT).show()
+            } else {
+                sensorModeButton.text = "센서 모드 ON"
+                unregisterSensorListener()
+                Toast.makeText(context, "센서 모드가 비활성화되었습니다", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
@@ -86,9 +125,11 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(map: NaverMap) {
         naverMap = map
+        isMapReady = true
 
         locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
         naverMap.locationSource = locationSource
+
 
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
@@ -100,13 +141,14 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 LOCATION_PERMISSION_REQUEST_CODE
             )
-            return
+        } else {
+            // 권한이 있는 경우 위치 추적 모드 설정
+            naverMap.locationTrackingMode = LocationTrackingMode.Follow
         }
 
-        naverMap.locationTrackingMode = LocationTrackingMode.Follow
-        // 마커 클릭 이벤트 설정
 
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -474,11 +516,15 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
     override fun onResume() {
         super.onResume()
         mapView.onResume()
+        if (isMapReady && isSensorModeEnabled) {
+            registerSensorListener()
+        }
     }
 
     override fun onPause() {
         super.onPause()
         mapView.onPause()
+        unregisterSensorListener()
     }
 
     override fun onStop() {
@@ -489,11 +535,78 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
     override fun onDestroyView() {
         super.onDestroyView()
         mapView.onDestroy()
+        unregisterSensorListener()
+        isMapReady = false
+        isSensorModeEnabled = false
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
         mapView.onLowMemory()
+    }
+
+    private fun registerSensorListener() {
+        accelerometer?.let {
+            sensorManager.registerListener(
+                this,
+                it,
+                SensorManager.SENSOR_DELAY_GAME
+            )
+        }
+    }
+
+    private fun unregisterSensorListener() {
+        sensorManager.unregisterListener(this)
+    }
+
+    override fun onSensorChanged(event: SensorEvent?) {
+        if (!isMapReady || !isSensorModeEnabled) return
+
+        if (event?.sensor?.type == Sensor.TYPE_ACCELEROMETER) {
+            val currentTime = System.currentTimeMillis()
+
+            if ((currentTime - lastUpdate) > 100) {
+                val x = event.values[0] // 좌우 기울기
+                val y = event.values[1] // 앞뒤 기울기
+
+                // 좌우 이동
+                if (abs(x) > SHAKE_THRESHOLD) {
+                    try {
+                        val cameraUpdate = CameraUpdate.scrollTo(
+                            LatLng(
+                                naverMap.cameraPosition.target.latitude,
+                                naverMap.cameraPosition.target.longitude + (x * MAP_MOVE_SPEED / 1000)
+                            )
+                        )
+                        naverMap.moveCamera(cameraUpdate)
+                    } catch (e: Exception) {
+                        Log.e("MapError", "Failed to move camera horizontally: ${e.message}")
+                    }
+                }
+
+                // 상하 이동
+                if (abs(y) > SHAKE_THRESHOLD) {
+                    try {
+                        val cameraUpdate = CameraUpdate.scrollTo(
+                            LatLng(
+                                naverMap.cameraPosition.target.latitude + (y * MAP_MOVE_SPEED / 1000),
+                                naverMap.cameraPosition.target.longitude
+                            )
+                        )
+                        naverMap.moveCamera(cameraUpdate)
+                    } catch (e: Exception) {
+                        Log.e("MapError", "Failed to move camera vertically: ${e.message}")
+                    }
+                }
+
+                lastX = x
+                lastY = y
+                lastUpdate = currentTime
+            }
+        }
+    }
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+        // 센서 정확도 변경 처리 (필요한 경우)
     }
 
     data class Restaurants(val name: String, val roadAddress: String)

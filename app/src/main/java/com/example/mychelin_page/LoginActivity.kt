@@ -3,6 +3,7 @@ package com.example.mychelin_page
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -11,57 +12,85 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
-
-    private lateinit var auth: FirebaseAuth  // Firebase Authentication instance
+    private lateinit var auth: FirebaseAuth
+    private lateinit var sessionManager: SessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Ensure that the layout file is named activity_login.xml
         setContentView(R.layout.activity_login)
         enableEdgeToEdge()
 
-        // Initialize Firebase Auth
+        // Initialize Firebase Auth and SessionManager
         auth = FirebaseAuth.getInstance()
-        val currentUser = auth.currentUser
+        sessionManager = SessionManager(this)
 
-        // Find views by their IDs from the XML layout
-        val loginButton: Button = findViewById(R.id.login_button)
-        val createAccountTextView: TextView = findViewById(R.id.create_account_text_view)
-
-        // Set click listener for the login button
-        loginButton.setOnClickListener {
-            loginUser()
+        // Check if user is already logged in
+        if (sessionManager.isLoggedIn()) {
+            val userData = sessionManager.getLoginSession()
+            // 저장된 이메일로 자동 로그인 시도
+            userData[SessionManager.KEY_EMAIL]?.let { email ->
+                val savedPassword = sessionManager.getPassword() // 암호화된 비밀번호 가져오기
+                if (savedPassword.isNotEmpty()) {
+                    loginUser(email, savedPassword)
+                }
+            }
         }
 
-        // Set click listener for the "Create an Account" text view
+        // Initialize views
+        val loginButton: Button = findViewById(R.id.login_button)
+        val createAccountTextView: TextView = findViewById(R.id.create_account_text_view)
+        val emailEditText: EditText = findViewById(R.id.email_edit_text)
+        val passwordEditText: EditText = findViewById(R.id.password_edit_text)
+        val rememberMeCheckBox: CheckBox = findViewById(R.id.remember_me_checkbox)
+
+        // Set up auto-fill if available
+        val savedUserData = sessionManager.getLoginSession()
+        emailEditText.setText(savedUserData[SessionManager.KEY_EMAIL])
+
+        // 저장된 비밀번호가 있으면 체크박스 체크
+        if (sessionManager.getPassword().isNotEmpty()) {
+            rememberMeCheckBox.isChecked = true
+            passwordEditText.setText(sessionManager.getPassword())
+        }
+
+        loginButton.setOnClickListener {
+            val email = emailEditText.text.toString().trim()
+            val password = passwordEditText.text.toString().trim()
+
+            if (rememberMeCheckBox.isChecked) {
+                sessionManager.savePassword(password) // 비밀번호 저장
+            } else {
+                sessionManager.clearPassword() // 비밀번호 삭제
+            }
+
+            loginUser(email, password)
+        }
+
         createAccountTextView.setOnClickListener {
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
         }
     }
 
-    private fun loginUser() {
-        // Retrieve email and password from EditText fields
-        val email = findViewById<EditText>(R.id.email_edit_text).text.toString().trim()
-        val password = findViewById<EditText>(R.id.password_edit_text).text.toString().trim()
-
-        // Check if email and password fields are not empty
+    private fun loginUser(email: String, password: String) {
         if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "이메일과 비밀번호를 입력하세요", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // Attempt to sign in with Firebase Authentication
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Sign-in success
+                    // Save login session
+                    auth.currentUser?.let { user ->
+                        sessionManager.saveLoginSession(email, user.uid)
+                    }
                     Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
-                    // Navigate to MainActivity
                     navigateToMainActivity()
                 } else {
-                    // Sign-in failure
                     Toast.makeText(this, "로그인 실패: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                    // 로그인 실패시 세션 클리어
+                    sessionManager.clearSession()
                 }
             }
     }
@@ -69,7 +98,6 @@ class LoginActivity : AppCompatActivity() {
     private fun navigateToMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
-        finish() // Close LoginActivity so the user cannot go back to it with the back button
+        finish()
     }
-
 }
