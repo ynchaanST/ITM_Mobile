@@ -59,6 +59,14 @@ dependencies {
     implementation ("com.squareup.retrofit2:retrofit:2.9.0'")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
 
+    // Firebase Auth and Storage
+    implementation ("com.google.firebase:firebase-auth:21.3.0")
+    implementation ("com.google.firebase:firebase-storage:20.2.0")
+
+// Glide for image loading
+    implementation ("com.github.bumptech.glide:glide:4.15.1")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
+
 
     implementation ("com.google.android.gms:play-services-location:21.3.0")
     implementation ("com.naver.maps:map-sdk:3.19.1") // Use the latest version
