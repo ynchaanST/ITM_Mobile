@@ -2,13 +2,17 @@ package com.example.mychelin_page
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -24,6 +28,7 @@ class ProfileFragment : Fragment() {
     private lateinit var recentActivityRestaurantName: TextView
     private lateinit var recentActivityDate: TextView
     private lateinit var recentActivityMenu: TextView
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,6 +48,8 @@ class ProfileFragment : Fragment() {
         recentActivityDate = view.findViewById(R.id.card1_content)
         recentActivityMenu = view.findViewById(R.id.card1_menu)
 
+
+        setupCardListeners(view)
         // 사용자 데이터 로드
         loadProfileData()
 
@@ -51,6 +58,7 @@ class ProfileFragment : Fragment() {
 
         // Settings 버튼 클릭 리스너 설정
         setupSettingsButton()
+
 
         return view
     }
@@ -138,6 +146,26 @@ class ProfileFragment : Fragment() {
                 "Unable to open settings. Please try again.",
                 Toast.LENGTH_SHORT
             ).show()
+        }
+    }
+
+
+    private fun setupCardListeners(view: View) {
+        Log.d("ProfileFragment", "Setting up card listeners") // 추가
+
+        val expenseSummaryButton = view.findViewById<Button>(R.id.expense_summary_button)
+        val restaurantHistoryButton = view.findViewById<Button>(R.id.restaurant_history_button)
+
+        Log.d("ProfileFragment", "Buttons found: expense=${expenseSummaryButton != null}, history=${restaurantHistoryButton != null}") // 추가
+
+        expenseSummaryButton?.setOnClickListener {
+            Log.d("ProfileFragment", "Expense Summary button clicked")
+            findNavController().navigate(R.id.action_profile_to_expense_detail)
+        }
+
+        restaurantHistoryButton?.setOnClickListener {
+            Log.d("ProfileFragment", "Restaurant History button clicked")
+            findNavController().navigate(R.id.action_profile_to_restaurant_history)
         }
     }
 }

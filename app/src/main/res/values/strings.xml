@@ -39,4 +39,8 @@
         <item>Michelin 2 Stars</item>
         <item>Michelin 1 Star</item>
     </string-array>
+    <string-array name="expense_filter_options">
+        <item>Monthly</item>
+        <item>Daily</item>
+    </string-array>
 </resources>

@@ -224,7 +224,7 @@ class HomeFragment : Fragment() {
             ).apply {
                 setMargins(8, 0, 8, 0) // 별 간 간격
             }
-            topRestaurantStarsContainer.addView(별)
+            topRestaurantStarsContainer.addView(star)
         }
     }
 }

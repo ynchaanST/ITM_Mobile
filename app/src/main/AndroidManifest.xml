@@ -39,10 +39,12 @@
             android:theme="@style/Theme.Mychelin_Page"/>
 
         <!-- Register Activity -->
-        <activity android:name=".RegisterActivity" android:exported="true" />
+        <activity android:name=".RegisterActivity" android:exported="true"
+            android:theme="@style/Theme.Mychelin_Page"/>
 
         <!-- Settings Activity -->
-        <activity android:name=".SettingsActivity" android:exported="true" />
+        <activity android:name=".SettingsActivity" android:exported="true"
+            android:theme="@style/Theme.Mychelin_Page"/>
 
 
         <!-- FileProvider for Camera Integration -->

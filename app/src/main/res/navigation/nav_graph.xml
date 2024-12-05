@@ -32,7 +32,14 @@
     <fragment
         android:id="@+id/menu_profile"
         android:name="com.example.mychelin_page.ProfileFragment"
-        android:label="profile" />
+        android:label="profile">
+        <action
+            android:id="@+id/action_profile_to_expense_detail"
+            app:destination="@id/expenseDetailFragment" />
+        <action
+            android:id="@+id/action_profile_to_restaurant_history"
+            app:destination="@id/restaurantHistoryFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/page_booking"
@@ -68,5 +75,15 @@
             android:name="reservationId"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/expenseDetailFragment"
+        android:name="com.example.mychelin_page.ExpenseDetailFragment"
+        android:label="Expense Detail" />
+
+    <!-- RestaurantHistoryFragment 추가 -->
+    <fragment
+        android:id="@+id/restaurantHistoryFragment"
+        android:name="com.example.mychelin_page.RestaurantHistoryFragment"
+        android:label="Restaurant History" />
 
 </navigation>

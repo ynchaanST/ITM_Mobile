@@ -77,4 +77,6 @@ dependencies {
     // Glide for image loading
     implementation (libs.glide)
     annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
+
+    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }
