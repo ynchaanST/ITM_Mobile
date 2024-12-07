@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="#8B0000">
+    android:background="#F5E1C1">
 
     <!-- Container with Rounded Corners -->
     <LinearLayout
@@ -42,9 +42,9 @@
             android:hint="@string/name_hint"
             android:inputType="textPersonName"
             android:padding="12dp"
-            android:backgroundTint="#8B0000"
+            android:backgroundTint="#800020"
             android:textColor="@android:color/black"
-            android:textColorHint="#8B0000" />
+            android:textColorHint="#800020" />
 
         <!-- Email Input Field -->
         <EditText
@@ -55,9 +55,9 @@
             android:hint="@string/email_hint"
             android:inputType="textEmailAddress"
             android:padding="12dp"
-            android:backgroundTint="#8B0000"
+            android:backgroundTint="#800020"
             android:textColor="@android:color/black"
-            android:textColorHint="#8B0000"
+            android:textColorHint="#800020"
             android:autofillHints="emailAddress" />
 
         <!-- Password Input Field -->
@@ -69,9 +69,9 @@
             android:hint="@string/password_hint"
             android:inputType="textPassword"
             android:padding="12dp"
-            android:backgroundTint="#8B0000"
+            android:backgroundTint="#800020"
             android:textColor="@android:color/black"
-            android:textColorHint="#8B0000" />
+            android:textColorHint="#800020" />
 
         <!-- Register Button -->
         <Button
@@ -81,7 +81,7 @@
             android:layout_marginBottom="16dp"
             android:text="@string/register_button"
             android:padding="12dp"
-            android:backgroundTint="#8B0000"
+            android:backgroundTint="#800020"
             android:textColor="@android:color/white" />
 
         <!-- Already have an Account TextView -->
@@ -91,7 +91,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="@string/already_have_account"
-            android:textColor="#8B0000"
+            android:textColor="#800020"
             android:textStyle="bold"
             android:padding="8dp" />
     </LinearLayout>

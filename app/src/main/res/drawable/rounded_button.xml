@@ -1,18 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 버튼 눌렸을 때 -->
     <item android:state_pressed="true">
-        <!-- 버튼 눌렸을 때 -->
         <shape>
-            <solid android:color="#8B0000" />
+            <solid android:color="#B76E79" />
             <corners android:radius="16dp" />
         </shape>
     </item>
 
-    <item>
-        <!-- 기본 버튼 상태 -->
+    <!-- 마우스 올렸을 때 -->
+    <item android:state_hovered="true">
         <shape>
-            <solid android:color="#600B04" />
+            <solid android:color="#B76E79" />
             <corners android:radius="16dp" />
         </shape>
     </item>
+
+    <!-- 기본 상태 -->
+    <item>
+        <shape>
+            <solid android:color="#800020" />
+            <corners android:radius="16dp" />
+        </shape>
+    </item>
+
 </selector>

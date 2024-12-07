@@ -25,9 +25,9 @@ class ReservationItemFragment : Fragment(R.layout.fragment_reservation_item) {
     private lateinit var bookingTimeText: TextView
     private lateinit var guestCountText: TextView
     private lateinit var requestEditText: EditText
-    private lateinit var reviseButton: Button
+//    private lateinit var reviseButton: Button
     private lateinit var cancelButton: Button
-    private lateinit var confirmButton: Button
+//    private lateinit var confirmButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,12 +51,13 @@ class ReservationItemFragment : Fragment(R.layout.fragment_reservation_item) {
         guestCountText = view.findViewById(R.id.guestCountText)
         requestEditText = view.findViewById(R.id.requestEditText)
 //        reviseButton = view.findViewById(R.id.resReviseButton)
-//        cancelButton = view.findViewById(R.id.resCancleButton)
-        confirmButton = view.findViewById(R.id.resConfirmButton)
+        cancelButton = view.findViewById(R.id.resCancleButton)
+//        confirmButton = view.findViewById(R.id.resConfirmButton)
 
         // Confirm 버튼과 Revise 버튼 숨기기
-        confirmButton.visibility = View.GONE
-        reviseButton.visibility = View.GONE
+//        confirmButton.visibility = View.GONE
+//        reviseButton.visibility = View.GONE
+        cancelButton.visibility = View.GONE
     }
 
     private fun setupListeners() {
@@ -149,6 +150,7 @@ class ReservationItemFragment : Fragment(R.layout.fragment_reservation_item) {
                 val reservation = document.toObject(ReservationData::class.java)
                 if (reservation != null) {
                     updateUI(reservation)
+                    cancelButton.visibility = View.VISIBLE
                 } else {
                     Toast.makeText(context, "예약 데이터를 로드할 수 없습니다.", Toast.LENGTH_SHORT).show()
                 }

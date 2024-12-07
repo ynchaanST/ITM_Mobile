@@ -4,17 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="#8B0000">
+    android:background="#F5E1C1">
 
     <!-- Logo Icon -->
     <ImageView
         android:id="@+id/logo_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="96dp"
-        android:src="@drawable/icon_logo"
-        android:contentDescription="Logo" />
+        android:layout_marginTop="60dp"
+        android:contentDescription="Logo"
+        android:src="@drawable/icon_logo" />
 
     <!-- Container with Rounded Corners -->
     <LinearLayout
@@ -37,8 +37,8 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="32dp"
             android:text="MYCHELIN GUIDE"
-            android:textColor="#8B0000"
-            android:textSize="24sp"
+            android:textColor="#800020"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
         <!-- Email Input Field -->
@@ -50,9 +50,9 @@
             android:hint="Email"
             android:inputType="textEmailAddress"
             android:padding="12dp"
-            android:backgroundTint="#8B0000"
+            android:backgroundTint="#800020"
             android:textColor="@android:color/black"
-            android:textColorHint="#8B0000"
+            android:textColorHint="#800020"
             android:autofillHints="emailAddress" />
 
         <!-- Password Input Field -->
@@ -64,9 +64,9 @@
             android:hint="Password"
             android:inputType="textPassword"
             android:padding="12dp"
-            android:backgroundTint="#8B0000"
+            android:backgroundTint="#800020"
             android:textColor="@android:color/black"
-            android:textColorHint="#8B0000" />
+            android:textColorHint="#800020" />
 
         <!-- Log In Button -->
         <Button
@@ -76,7 +76,7 @@
             android:layout_marginBottom="16dp"
             android:text="Log in"
             android:padding="12dp"
-            android:backgroundTint="#8B0000"
+            android:backgroundTint="#800020"
             android:textColor="@android:color/white" />
 
         <!-- Create an Account TextView -->
@@ -86,7 +86,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="Create an Account"
-            android:textColor="#8B0000"
+            android:textColor="#800020"
             android:textStyle="bold"
             android:padding="8dp" />
 
@@ -96,7 +96,7 @@
             android:layout_height="wrap_content"
             android:text="로그인 정보 저장"
             android:layout_marginTop="8dp"
-            android:textColor="#8B0000"/>
+            android:textColor="#800020"/>
 
     </LinearLayout>
 
