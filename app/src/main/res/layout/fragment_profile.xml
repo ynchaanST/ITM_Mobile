@@ -57,15 +57,30 @@
                 android:textColor="@color/black"
                 android:textSize="14sp" />
 
-            <!-- Settings 아이콘 -->
-            <ImageView
-                android:id="@+id/settings_icon"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
-                android:contentDescription="Settings"
-                android:src="@drawable/icon_modify" />
+                android:layout_marginTop="24dp">
+
+                <!-- Settings 아이콘 -->
+                <ImageView
+                    android:id="@+id/settings_icon"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginRight="30dp"
+                    android:contentDescription="Settings"
+                    android:src="@drawable/icon_modify" />
+
+                <ImageView
+                    android:id="@+id/logout_icon"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:contentDescription="Logout"
+                    android:src="@drawable/icon_logout" />
+
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 

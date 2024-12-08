@@ -25,6 +25,7 @@ class ProfileFragment : Fragment() {
     private lateinit var nameTextView: TextView
     private lateinit var profileImageView: ImageView
     private lateinit var settingsIcon: ImageView
+    private lateinit var logoutIcon: ImageView
     private lateinit var recentActivityRestaurantName: TextView
     private lateinit var recentActivityDate: TextView
     private lateinit var recentActivityMenu: TextView
@@ -44,6 +45,7 @@ class ProfileFragment : Fragment() {
         nameTextView = view.findViewById(R.id.profile_name)
         profileImageView = view.findViewById(R.id.profile_image)
         settingsIcon = view.findViewById(R.id.settings_icon)
+        logoutIcon = view.findViewById(R.id.logout_icon)
         recentActivityRestaurantName = view.findViewById(R.id.card1_restaurant_name)
         recentActivityDate = view.findViewById(R.id.card1_content)
         recentActivityMenu = view.findViewById(R.id.card1_menu)
