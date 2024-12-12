@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -29,6 +30,7 @@ class ProfileFragment : Fragment() {
     private lateinit var recentActivityRestaurantName: TextView
     private lateinit var recentActivityDate: TextView
     private lateinit var recentActivityMenu: TextView
+    private lateinit var sessionManager: SessionManager
 
 
     override fun onCreateView(
@@ -39,6 +41,7 @@ class ProfileFragment : Fragment() {
 
         // FirebaseAuth 초기화
         auth = FirebaseAuth.getInstance()
+        sessionManager = SessionManager(requireContext())
 
         // UI 요소 초기화
         emailTextView = view.findViewById(R.id.profile_email)
@@ -61,6 +64,10 @@ class ProfileFragment : Fragment() {
         // Settings 버튼 클릭 리스너 설정
         setupSettingsButton()
 
+        logoutIcon.setOnClickListener {
+            showLogoutConfirmationDialog()
+        }
+
 
         return view
     }
@@ -75,25 +82,23 @@ class ProfileFragment : Fragment() {
         val user = auth.currentUser
 
         if (user != null) {
-            // 이메일 설정
             emailTextView.text = user.email ?: "No email available"
-
-            // 이름 설정
             nameTextView.text = user.displayName ?: "Default Name"
 
-            // Firebase Storage에서 프로필 사진 가져오기
             val storageRef =
                 FirebaseStorage.getInstance().reference.child("profile_images/${user.uid}.jpg")
             storageRef.downloadUrl.addOnSuccessListener { uri ->
-                Glide.with(this)
-                    .load(uri)
-                    .placeholder(R.drawable.default_profile) // 기본 프로필 이미지
-                    .into(profileImageView)
-            }.addOnFailureListener {
-                profileImageView.setImageResource(R.drawable.default_profile) // 실패 시 기본 이미지
+                if (isAdded) {
+                    Glide.with(requireContext())
+                        .load(uri)
+                        .placeholder(R.drawable.default_profile)
+                        .into(profileImageView)
+                }
+            }.addOnFailureListener { exception ->
+                Log.e("ProfileFragment", "Failed to load profile image", exception)
+                profileImageView.setImageResource(R.drawable.default_profile)
             }
         } else {
-            // 사용자 인증이 없는 경우
             Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
         }
     }
@@ -168,6 +173,43 @@ class ProfileFragment : Fragment() {
         restaurantHistoryButton?.setOnClickListener {
             Log.d("ProfileFragment", "Restaurant History button clicked")
             findNavController().navigate(R.id.action_profile_to_restaurant_history)
+        }
+    }
+
+    private fun showLogoutConfirmationDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("로그아웃")
+            .setMessage("로그아웃 하시겠습니까?")
+            .setPositiveButton("확인") { _, _ ->
+                performLogout()
+            }
+            .setNegativeButton("취소", null)
+            .show()
+    }
+
+    private fun performLogout() {
+        try {
+            // Activity가 유효한지 확인
+            if (!isAdded || activity == null) return
+
+            // 세션 정보 삭제
+            sessionManager.clearSession()
+
+            // Firebase 로그아웃
+            auth.signOut()
+
+            // 로그인 화면으로 이동
+            Intent(requireContext(), LoginActivity::class.java).also { intent ->
+                // 새로운 태스크로 시작하고 이전 태스크를 모두 제거
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intent)
+            }
+
+            // Activity 종료는 startActivity 후에 실행
+            activity?.finish()
+        } catch (e: Exception) {
+            Log.e("ProfileFragment", "Logout error", e)
+            Toast.makeText(requireContext(), "로그아웃 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
         }
     }
 }
