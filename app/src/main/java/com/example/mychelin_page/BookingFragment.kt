@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import java.util.Calendar
 import android.content.Context
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
@@ -179,7 +180,16 @@ class BookingFragment : Fragment(R.layout.fragment_booking) {
                 putString("specialRequests", requestEditText.text.toString())
             }
 
-            findNavController().navigate(R.id.action_booking_to_restaurant_table, bundle)
+
+            findNavController().navigate(
+                R.id.action_booking_to_restaurant_table,
+                bundle,
+                navOptions {
+                    popUpTo(R.id.page_booking) {
+                        inclusive = true  // 현재 프래그먼트를 백스택에서 제거
+                    }
+                }
+            )
         }
     }
 

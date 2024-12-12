@@ -166,7 +166,7 @@ class ReservationItemFragment : Fragment(R.layout.fragment_reservation_item) {
         bookingTimeText.text = "시간: ${formatTime(reservation.reservationDate)}"
         guestCountText.text = "인원: 성인 ${reservation.numberOfGuests}명"
         requestEditText.setText(reservation.specialRequests ?: "")
-        restaurantImage.setImageResource(R.drawable.ic_launcher_background)
+        restaurantImage.setImageResource(R.drawable.ic_restaurant)
         requestEditText.isEnabled = false  // 수정 불가능하도록 설정
     }
 

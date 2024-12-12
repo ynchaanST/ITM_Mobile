@@ -61,17 +61,36 @@
             android:autofillHints="emailAddress" />
 
         <!-- Password Input Field -->
-        <EditText
-            android:id="@+id/password_edit_text"
+        <!-- 기존 레이아웃에서 password EditText 부분을 아래와 같이 수정 -->
+        <!-- Password Input Field Container -->
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:hint="@string/password_hint"
-            android:inputType="textPassword"
-            android:padding="12dp"
-            android:backgroundTint="#800020"
-            android:textColor="@android:color/black"
-            android:textColorHint="#800020" />
+            android:layout_marginBottom="24dp">
+
+            <EditText
+                android:id="@+id/password_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/password_hint"
+                android:inputType="textPassword"
+                android:padding="12dp"
+                android:backgroundTint="#8B0000"
+                android:textColor="@android:color/black"
+                android:textColorHint="#8B0000" />
+
+            <ImageView
+                android:id="@+id/toggle_password_visibility"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="12dp"
+                android:src="@drawable/ic_visibility"
+                android:clickable="true"
+                android:focusable="true" />
+
+        </RelativeLayout>
 
         <!-- Register Button -->
         <Button

@@ -8,6 +8,7 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
@@ -207,7 +208,19 @@ class RestaurantTableFragment : Fragment(R.layout.fragment_restaurant_table) {
                             .addOnSuccessListener {
                                 createReservationNotification(userId, reservationId, reservationStartTime)
                                 Toast.makeText(context, "예약이 완료되었습니다.", Toast.LENGTH_SHORT).show()
-                                findNavController().navigate(R.id.action_restaurantTable_to_reservation)
+                                findNavController().navigate(
+                                    R.id.action_restaurantTable_to_reservation,
+                                    null, // bundle이 필요없다면 null로 설정
+                                    navOptions {
+                                        popUpTo(R.id.page_booking) { // booking 페이지까지 백스택에서 제거
+                                            inclusive = true
+                                        }
+                                        // 추가로 현재 테이블 선택 페이지도 제거
+                                        popUpTo(R.id.page_restaurant_table) {
+                                            inclusive = true
+                                        }
+                                    }
+                                )
                             }
                             .addOnFailureListener { e ->
                                 Toast.makeText(context, "예약 저장 실패: ${e.message}", Toast.LENGTH_SHORT).show()
