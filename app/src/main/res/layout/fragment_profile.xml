@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="#F5E1C1">
 
-    <!-- 프로필 헤더 -->
     <LinearLayout
         android:id="@+id/profile_header"
         android:layout_width="match_parent"
@@ -30,7 +29,7 @@
             android:contentDescription="@null"
             android:src="@drawable/default_profile" />
 
-        <!-- 사용자 정보 -->
+        <!-- 사용자 정보와 Settings 아이콘 -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -42,12 +41,13 @@
                 android:id="@+id/profile_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:text="Shadow"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <!-- 이메일 -->
+            <!-- 이메일 주소 -->
             <TextView
                 android:id="@+id/profile_email"
                 android:layout_width="wrap_content"
@@ -57,15 +57,30 @@
                 android:textColor="@color/black"
                 android:textSize="14sp" />
 
-            <!-- 설정 아이콘 -->
-            <ImageView
-                android:id="@+id/settings_icon"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
-                android:src="@drawable/icon_modify"
-                android:contentDescription="Settings" />
+                android:layout_marginTop="24dp">
+
+                <!-- Settings 아이콘 -->
+                <ImageView
+                    android:id="@+id/settings_icon"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginRight="30dp"
+                    android:contentDescription="Settings"
+                    android:src="@drawable/icon_modify" />
+
+                <ImageView
+                    android:id="@+id/logout_icon"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:contentDescription="Logout"
+                    android:src="@drawable/icon_logout" />
+
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
@@ -139,61 +154,12 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Highest Spent Restaurant 제목 -->
-        <TextView
-            android:id="@+id/highest_spent_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Highest Spent Restaurant"
-            android:textColor="#000000"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_gravity="center"
-            android:layout_marginBottom="8dp" />
-
-        <!-- Highest Spent Restaurant 카드 -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/highest_spent_card"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
-            app:cardBackgroundColor="@android:color/white"
-            app:cardCornerRadius="12dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <!-- 식당 이름 -->
-                <TextView
-                    android:id="@+id/highest_spent_restaurant_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Restaurant Name"
-                    android:textColor="#000000"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <!-- 총 소비 금액 -->
-                <TextView
-                    android:id="@+id/highest_spent_total"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Total spent: 0"
-                    android:textColor="#666666"
-                    android:textSize="14sp" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
         <!-- Expense Summary 버튼 -->
         <Button
             android:id="@+id/expense_summary_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="16dp"
             android:padding="16dp"
             android:backgroundTint="@android:color/white"
             android:textColor="#000000"
@@ -216,6 +182,7 @@
             android:drawablePadding="16dp"
             android:text="Restaurant History"
             app:cornerRadius="12dp" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

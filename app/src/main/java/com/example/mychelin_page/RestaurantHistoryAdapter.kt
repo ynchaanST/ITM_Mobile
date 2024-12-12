@@ -15,7 +15,7 @@ class RestaurantHistoryAdapter(
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val restaurantName: TextView = itemView.findViewById(R.id.restaurantName)
-        private val restaurantAddress: TextView = itemView.findViewById(R.id.restaurantAddress)
+        private val visitCount: TextView = itemView.findViewById(R.id.visitCount)
         private val lastVisitDate: TextView = itemView.findViewById(R.id.lastVisitDate)
         private val totalSpent: TextView = itemView.findViewById(R.id.totalSpent)
         private val star1: ImageView = itemView.findViewById(R.id.star1)
@@ -24,7 +24,7 @@ class RestaurantHistoryAdapter(
 
         fun bind(item: RestaurantHistoryItem) {
             restaurantName.text = item.name
-            restaurantAddress.text = item.address
+            visitCount.text = "방문 횟수: ${item.visitCount}회"
             lastVisitDate.text = "마지막 방문: ${item.lastVisited}"
             totalSpent.text = "총 지출: ${String.format("%,d", item.totalSpent.toInt())}원"
 

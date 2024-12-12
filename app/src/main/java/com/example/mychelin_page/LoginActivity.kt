@@ -36,6 +36,7 @@ class LoginActivity : AppCompatActivity() {
                 val savedPassword = sessionManager.getPassword() // 암호화된 비밀번호 가져오기
                 if (savedPassword.isNotEmpty()) {
                     loginUser(email, savedPassword)
+                    return@onCreate
                 }
             }
         }
