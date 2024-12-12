@@ -65,8 +65,11 @@ class RestaurantHistoryFragment : Fragment() {
         filterSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
                 val rating = when (pos) {
-                    0 -> null // All restaurants
-                    else -> pos // 1, 2, or 3 stars
+                    0 -> null // "모두 보기"
+                    1 -> 3    // 별 1개
+                    2 -> 2    // 별 2개
+                    3 -> 1    // 별 3개
+                    else -> null
                 }
                 loadRestaurants(rating)
             }
@@ -75,27 +78,37 @@ class RestaurantHistoryFragment : Fragment() {
         }
     }
 
+
     private fun loadRestaurants(rating: Int?) {
         val userId = auth.currentUser?.uid ?: return
 
-        db.collection("users")
+        val query = db.collection("users")
             .document(userId)
             .collection("visitData")
-            .get()
+
+        // Firestore 쿼리에 필터 추가 (별점 필터링)
+        val filteredQuery = if (rating != null) {
+            query.whereEqualTo("rating", rating)
+        } else {
+            query // 필터링 없이 모든 데이터를 가져옴
+        }
+
+        filteredQuery.get()
             .addOnSuccessListener { documents ->
                 val restaurants = documents.mapNotNull { doc ->
-                    val restaurantRating = doc.getLong("rating")?.toInt() ?: 0
-                    if (rating == null || restaurantRating == rating) {
-                        RestaurantHistoryItem(
-                            name = doc.getString("restaurantName") ?: "",
-                            address = doc.getString("address") ?: "",
-                            rating = restaurantRating,
-                            lastVisited = doc.getString("lastVisitDate") ?: "",
-                            totalSpent = doc.getDouble("totalSpent") ?: 0.0
-                        )
-                    } else null
+                    RestaurantHistoryItem(
+                        name = doc.getString("restaurantName") ?: "",
+                        visitCount = doc.getLong("visitCount")?.toInt() ?: 0,
+                        rating = doc.getLong("rating")?.toInt() ?: 0,
+                        lastVisited = doc.getString("lastVisitDate") ?: "",
+                        totalSpent = doc.getDouble("totalSpent") ?: 0.0
+                    )
                 }
                 adapter.submitList(restaurants)
+            }
+            .addOnFailureListener { exception ->
+                // 로드 실패 처리
+                exception.printStackTrace()
             }
     }
 
@@ -104,7 +117,7 @@ class RestaurantHistoryFragment : Fragment() {
             .setTitle(restaurant.name)
             .setMessage(
                 """
-            주소: ${restaurant.address}
+            방문 횟수: ${restaurant.visitCount}
             별점: ${restaurant.rating}
             마지막 방문: ${restaurant.lastVisited}
             총 지출: ${String.format("%,d", restaurant.totalSpent.toInt())}원
