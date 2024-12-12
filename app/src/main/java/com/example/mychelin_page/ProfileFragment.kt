@@ -19,6 +19,7 @@ import com.google.firebase.storage.FirebaseStorage
 class ProfileFragment : Fragment() {
 
     private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
     private lateinit var emailTextView: TextView
     private lateinit var nameTextView: TextView
     private lateinit var profileImageView: ImageView
@@ -35,8 +36,9 @@ class ProfileFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
 
-        // FirebaseAuth 초기화
+        // Firebase 초기화
         auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
 
         // UI 요소 초기화
         emailTextView = view.findViewById(R.id.profile_email)
@@ -46,20 +48,15 @@ class ProfileFragment : Fragment() {
         recentActivityRestaurantName = view.findViewById(R.id.card1_restaurant_name)
         recentActivityDate = view.findViewById(R.id.card1_content)
         recentActivityMenu = view.findViewById(R.id.card1_menu)
-        highestSpentRestaurantName = view.findViewById(R.id.highest_spent_restaurant_name) // 수정된 ID
-        highestSpentAmount = view.findViewById(R.id.highest_spent_total) // 수정된 ID
+        highestSpentRestaurantName = view.findViewById(R.id.highest_spent_restaurant_name)
+        highestSpentAmount = view.findViewById(R.id.highest_spent_total)
 
-        setupCardListeners(view)
-        // 사용자 데이터 로드
+        // 데이터 로드
         loadProfileData()
-
-        // Recent Activity 데이터 로드
         loadRecentActivity()
-
-        // Highest Spent Restaurant 데이터 로드
         loadHighestSpentRestaurant()
 
-        // Settings 버튼 클릭 리스너 설정
+        // 설정 버튼 동작 설정
         setupSettingsButton()
 
         return view
@@ -67,7 +64,7 @@ class ProfileFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        // SettingsActivity에서 수정된 데이터를 반영하기 위해 데이터 다시 로드
+        // Resume 시 최신 데이터 다시 로드
         loadProfileData()
     }
 
@@ -75,25 +72,35 @@ class ProfileFragment : Fragment() {
         val user = auth.currentUser
 
         if (user != null) {
-            // 이메일 설정
+            // Firebase Auth 데이터 설정
             emailTextView.text = user.email ?: "No email available"
-
-            // 이름 설정
             nameTextView.text = user.displayName ?: "Default Name"
 
+            // Firebase Firestore에서 최신 데이터 가져오기
+            db.collection("users").document(user.uid).get()
+                .addOnSuccessListener { document ->
+                    if (document != null) {
+                        val name = document.getString("name") ?: "Default Name"
+                        val email = document.getString("email") ?: "No email available"
+                        nameTextView.text = name
+                        emailTextView.text = email
+                    }
+                }
+                .addOnFailureListener {
+                    Toast.makeText(requireContext(), "Failed to load profile data", Toast.LENGTH_SHORT).show()
+                }
+
             // Firebase Storage에서 프로필 사진 가져오기
-            val storageRef =
-                FirebaseStorage.getInstance().reference.child("profile_images/${user.uid}.jpg")
+            val storageRef = FirebaseStorage.getInstance().reference.child("profile_images/${user.uid}.jpg")
             storageRef.downloadUrl.addOnSuccessListener { uri ->
                 Glide.with(this)
                     .load(uri)
-                    .placeholder(R.drawable.default_profile) // 기본 프로필 이미지
+                    .placeholder(R.drawable.default_profile)
                     .into(profileImageView)
             }.addOnFailureListener {
-                profileImageView.setImageResource(R.drawable.default_profile) // 실패 시 기본 이미지
+                profileImageView.setImageResource(R.drawable.default_profile)
             }
         } else {
-            // 사용자 인증이 없는 경우
             Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
         }
     }
@@ -101,8 +108,6 @@ class ProfileFragment : Fragment() {
     private fun loadRecentActivity() {
         val user = auth.currentUser
         if (user == null) return
-
-        val db = FirebaseFirestore.getInstance()
 
         db.collection("users").document(user.uid).collection("visitData")
             .orderBy("lastVisitDate", com.google.firebase.firestore.Query.Direction.DESCENDING)
@@ -115,7 +120,6 @@ class ProfileFragment : Fragment() {
                     val lastVisitDate = document.getString("lastVisitDate") ?: "Unknown date"
                     val menu = document.getString("menu") ?: "No menu data"
 
-                    // Recent Activity 데이터 업데이트
                     recentActivityRestaurantName.text = restaurantName
                     recentActivityDate.text = "Last visited: $lastVisitDate"
                     recentActivityMenu.text = "Menu: $menu"
@@ -136,8 +140,6 @@ class ProfileFragment : Fragment() {
         val user = auth.currentUser
         if (user == null) return
 
-        val db = FirebaseFirestore.getInstance()
-
         db.collection("users").document(user.uid).collection("visitData")
             .orderBy("totalSpent", com.google.firebase.firestore.Query.Direction.DESCENDING)
             .limit(1)
@@ -148,7 +150,6 @@ class ProfileFragment : Fragment() {
                     val restaurantName = document.getString("restaurantName") ?: "No data"
                     val totalSpent = document.getLong("totalSpent") ?: 0L
 
-                    // Highest Spent Restaurant 데이터 업데이트
                     highestSpentRestaurantName.text = restaurantName
                     highestSpentAmount.text = "Total spent: $totalSpent"
                 } else {
@@ -173,24 +174,7 @@ class ProfileFragment : Fragment() {
             val intent = Intent(requireContext(), SettingsActivity::class.java)
             startActivity(intent)
         } catch (e: Exception) {
-            Toast.makeText(
-                requireContext(),
-                "Unable to open settings. Please try again.",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-    }
-
-    private fun setupCardListeners(view: View) {
-        val expenseSummaryButton = view.findViewById<Button>(R.id.expense_summary_button)
-        val restaurantHistoryButton = view.findViewById<Button>(R.id.restaurant_history_button)
-
-        expenseSummaryButton?.setOnClickListener {
-            findNavController().navigate(R.id.action_profile_to_expense_detail)
-        }
-
-        restaurantHistoryButton?.setOnClickListener {
-            findNavController().navigate(R.id.action_profile_to_restaurant_history)
+            Toast.makeText(requireContext(), "Unable to open settings. Please try again.", Toast.LENGTH_SHORT).show()
         }
     }
 }

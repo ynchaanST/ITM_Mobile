@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 
 class SettingsActivity : AppCompatActivity() {
@@ -52,17 +53,17 @@ class SettingsActivity : AppCompatActivity() {
             val email = emailEditText.text.toString()
             val password = passwordEditText.text.toString()
 
-            // Validate inputs
-            if (name.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()) {
-                // Update profile information
-                updateProfileInfo(name, email, password)
+            // Update profile information
+            updateProfileInfo(name, email)
 
-                // Upload profile image if selected
-                if (selectedImageUri != null) {
-                    uploadImageToFirebase(selectedImageUri!!)
-                }
-            } else {
-                Toast.makeText(this, "Please fill out all fields", Toast.LENGTH_SHORT).show()
+            // Update password only if provided
+            if (password.isNotEmpty()) {
+                updatePassword(password)
+            }
+
+            // Upload profile image if selected
+            if (selectedImageUri != null) {
+                uploadImageToFirebase(selectedImageUri!!)
             }
         }
     }
@@ -73,17 +74,16 @@ class SettingsActivity : AppCompatActivity() {
         if (user != null) {
             val storageRef = FirebaseStorage.getInstance().reference.child("profile_images/${user.uid}.jpg")
             storageRef.downloadUrl.addOnSuccessListener { uri ->
-                profileImageView.setImageURI(uri)
+                Glide.with(this).load(uri).into(profileImageView)
             }.addOnFailureListener {
                 Toast.makeText(this, "Failed to load profile image", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    // Update name, email, and password in Firebase
-    private fun updateProfileInfo(name: String, email: String, password: String) {
+    // Update name and email in Firebase
+    private fun updateProfileInfo(name: String, email: String) {
         val user = auth.currentUser
-
         if (user != null) {
             // Update display name
             val profileUpdates = UserProfileChangeRequest.Builder()
@@ -92,31 +92,29 @@ class SettingsActivity : AppCompatActivity() {
 
             user.updateProfile(profileUpdates)
                 .addOnSuccessListener {
-                    Toast.makeText(this, "Name updated successfully", Toast.LENGTH_SHORT).show()
-                }
-                .addOnFailureListener {
-                    Toast.makeText(this, "Failed to update name", Toast.LENGTH_SHORT).show()
+                    updateFirestore("name", name)
                 }
 
             // Update email
             user.updateEmail(email)
                 .addOnSuccessListener {
-                    Toast.makeText(this, "Email updated successfully", Toast.LENGTH_SHORT).show()
+                    updateFirestore("email", email)
                 }
-                .addOnFailureListener {
-                    Toast.makeText(this, "Failed to update email", Toast.LENGTH_SHORT).show()
-                }
+        }
+    }
 
-            // Update password
-            user.updatePassword(password)
-                .addOnSuccessListener {
-                    Toast.makeText(this, "Password updated successfully", Toast.LENGTH_SHORT).show()
-                }
-                .addOnFailureListener {
-                    Toast.makeText(this, "Failed to update password", Toast.LENGTH_SHORT).show()
-                }
-        } else {
-            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
+    // Update password in Firebase
+    private fun updatePassword(password: String) {
+        val user = auth.currentUser
+        user?.updatePassword(password)
+    }
+
+    // Update Firestore user data
+    private fun updateFirestore(field: String, value: String) {
+        val user = auth.currentUser
+        if (user != null) {
+            val userDoc = FirebaseFirestore.getInstance().collection("users").document(user.uid)
+            userDoc.update(field, value)
         }
     }
 
@@ -126,12 +124,6 @@ class SettingsActivity : AppCompatActivity() {
         if (user != null) {
             val storageRef = FirebaseStorage.getInstance().reference.child("profile_images/${user.uid}.jpg")
             storageRef.putFile(imageUri)
-                .addOnSuccessListener {
-                    Toast.makeText(this, "Profile picture updated successfully!", Toast.LENGTH_SHORT).show()
-                }
-                .addOnFailureListener {
-                    Toast.makeText(this, "Failed to upload profile picture", Toast.LENGTH_SHORT).show()
-                }
         }
     }
 
@@ -158,8 +150,6 @@ class SettingsActivity : AppCompatActivity() {
             selectedImageUri = result.data?.data
             if (selectedImageUri != null) {
                 profileImageView.setImageURI(selectedImageUri)
-            } else {
-                Toast.makeText(this, "Image selection failed", Toast.LENGTH_SHORT).show()
             }
         }
     }
