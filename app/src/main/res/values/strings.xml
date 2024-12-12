@@ -35,9 +35,9 @@
     <string name="reservation">Reservation</string>
     <string-array name="filter_options">
         <item>All Restaurants</item>
-        <item>Michelin 3 Stars</item>
-        <item>Michelin 2 Stars</item>
-        <item>Michelin 1 Star</item>
+        <item>Mychelin 3 Stars</item>
+        <item>Mychelin 2 Stars</item>
+        <item>Mychelin 1 Star</item>
     </string-array>
     <string-array name="expense_filter_options">
         <item>Monthly</item>
