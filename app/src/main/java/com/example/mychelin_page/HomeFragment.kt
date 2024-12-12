@@ -3,11 +3,14 @@ package com.example.mychelin_page
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.ViewFlipper
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.FirebaseFirestore
 import retrofit2.Call
@@ -39,6 +42,10 @@ class HomeFragment : Fragment() {
     private lateinit var textViewMostSpentRestaurantName: TextView
     private lateinit var textViewMostSpentRestaurantTotal: TextView
 
+    private lateinit var viewFlipper: ViewFlipper
+    private val FLIPPER_INTERVAL = 3000
+    private lateinit var recommendationTitleCard: CardView
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -65,6 +72,9 @@ class HomeFragment : Fragment() {
 
         // 날씨 정보 가져오기
         getWeather()
+
+        viewFlipper = view.findViewById(R.id.restaurant_cards_flipper)
+        setupViewFlipper()
 
         // Firestore에서 데이터 가져오기
         fetchTopRatedRestaurant()
@@ -227,5 +237,51 @@ class HomeFragment : Fragment() {
             }
             topRestaurantStarsContainer.addView(star)
         }
+    }
+    private fun setupViewFlipper() {
+        // ViewFlipper 애니메이션 설정
+        viewFlipper.setInAnimation(context, android.R.anim.slide_in_left)
+        viewFlipper.setOutAnimation(context, android.R.anim.slide_out_right)
+
+        // 자동 플립 시작
+        viewFlipper.flipInterval = FLIPPER_INTERVAL
+        viewFlipper.startFlipping()
+
+        // 터치 이벤트 처리를 위한 변수들
+        var touchDownX = 0f
+        val minSwipeDistance = 150
+
+        // 스와이프로 수동 전환 가능하도록 설정
+        viewFlipper.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    touchDownX = event.x
+                    viewFlipper.stopFlipping()
+                    true
+                }
+                MotionEvent.ACTION_UP -> {
+                    val swipeDistance = event.x - touchDownX
+                    if (Math.abs(swipeDistance) > minSwipeDistance) {
+                        if (swipeDistance > 0) {
+                            viewFlipper.showPrevious()
+                        } else {
+                            viewFlipper.showNext()
+                        }
+                    }
+                    viewFlipper.startFlipping()
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+    override fun onPause() {
+        super.onPause()
+        viewFlipper.stopFlipping()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewFlipper.startFlipping()
     }
 }

@@ -337,46 +337,63 @@ class SearchFragment : Fragment(), OnMapReadyCallback, SensorEventListener {
 
     private fun displayFilteredMarkers(ratingFilter: Int?) {
         clearAllMarkers()
-        Log.d("Filtering","called!!!!!")
+        Log.d("Filtering", "Starting filtered markers display: $ratingFilter")
 
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         db.collection("users").document(userId).collection("visitData").get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
-                    val restaurantName = document.getString("restaurantName") ?: continue
-                    val rating = document.getLong("rating")?.toInt() ?: continue
-                    val totalSpent = document.getDouble("totalSpent") ?: continue
+                    // 필수 데이터 검증
+                    val restaurantName = document.getString("restaurantName")
+                    val rating = document.getLong("rating")?.toInt()
+                    val latitude = document.getDouble("latitude")
+                    val longitude = document.getDouble("longitude")
 
-                    if (ratingFilter == null || rating == ratingFilter) {
-                        val latLng = LatLng(document.getDouble("latitude") ?: 0.0, document.getDouble("longitude") ?: 0.0)
-                        val marker = Marker()
-                        marker.position = latLng
-                        marker.captionText = restaurantName
-                        marker.map = naverMap
+                    // null 체크를 통해 필수 데이터가 모두 있는 경우에만 마커 생성
+                    if (restaurantName != null && rating != null &&
+                        latitude != null && longitude != null &&
+                        (ratingFilter == null || rating == ratingFilter)) {
 
-                        when (rating) {
-                            3 -> marker.iconTintColor = resources.getColor(R.color.gold)
-                            2 -> marker.iconTintColor = resources.getColor(R.color.silver)
-                            1 -> marker.iconTintColor = resources.getColor(R.color.bronze)
-                        }
+                        Log.d("Filtering", "Creating marker for: $restaurantName, Rating: $rating, Lat: $latitude, Lng: $longitude")
 
-                        markers.add(marker)
+                        val latLng = LatLng(latitude, longitude)
+                        val marker = Marker().apply {
+                            position = latLng
+                            captionText = restaurantName
+                            map = naverMap
 
-                        for (marker in markers) {
-                            marker.setOnClickListener {
-                                showRestaurantInfoDialog(marker.captionText ?: "", latLng)
+                            // 마커 색상 설정
+                            iconTintColor = when (rating) {
+                                3 -> resources.getColor(R.color.gold)
+                                2 -> resources.getColor(R.color.silver)
+                                1 -> resources.getColor(R.color.bronze)
+                                else -> resources.getColor(android.R.color.black)
+                            }
+
+                            setOnClickListener {
+                                showRestaurantInfoDialog(restaurantName, latLng)
                                 true
                             }
                         }
+                        markers.add(marker)
                     }
                 }
 
+                // 마커 생성 결과 로깅
+                Log.d("Filtering", "Total markers created: ${markers.size}")
+                if (markers.isEmpty()) {
+                    Toast.makeText(requireContext(),
+                        "해당하는 등급의 식당이 없습니다.",
+                        Toast.LENGTH_SHORT).show()
+                }
             }
-            .addOnFailureListener {
-                Toast.makeText(requireContext(), "식당 정보를 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show()
+            .addOnFailureListener { e ->
+                Log.e("Filtering", "Failed to fetch restaurant data", e)
+                Toast.makeText(requireContext(),
+                    "식당 정보를 불러오는 데 실패했습니다.",
+                    Toast.LENGTH_SHORT).show()
             }
     }
-
     private fun setupFilterSpinner() {
         val filterSpinner = view?.findViewById<Spinner>(R.id.filter_spinner)
         filterSpinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
