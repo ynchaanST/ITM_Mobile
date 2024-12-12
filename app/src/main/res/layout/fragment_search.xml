@@ -16,18 +16,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Title TextView -->
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Search"
-        android:textColor="@android:color/black"
-        android:textSize="24sp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
 
     <!-- Search Bar -->
     <EditText
@@ -39,39 +27,30 @@
         android:padding="8dp"
         android:textColor="@android:color/black"
         android:textColorHint="@android:color/darker_gray"
-        app:layout_constraintTop_toBottomOf="@id/textView"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="48dp" />
 
-    <!-- Voice Search Button -->
+    <!-- Search Button -->
     <Button
-        android:id="@+id/voice_search_button"
+        android:id="@+id/search_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="🎤"
+        android:text="Search"
         app:layout_constraintTop_toTopOf="@id/search_bar"
         app:layout_constraintBottom_toBottomOf="@id/search_bar"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="16dp" />
-
-    <Button
-        android:id="@+id/sensor_mode_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="150dp"
-        android:text="센서 모드"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:backgroundTint="#800020" />
 
     <!-- Filter Spinner -->
     <Spinner
         android:id="@+id/filter_spinner"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:entries="@array/filter_options"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
@@ -80,17 +59,30 @@
         app:layout_constraintBottom_toTopOf="@+id/search_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_bar" />
+        app:layout_constraintTop_toBottomOf="@id/search_bar"
+        android:backgroundTint="@color/white"/>
 
-    <!-- Search Button -->
+    <!-- Voice Search Button -->
     <Button
-        android:id="@+id/search_button"
-        android:layout_width="wrap_content"
+        android:id="@+id/voice_search_button"
+        android:layout_width="110dp"
         android:layout_height="wrap_content"
-        android:text="Search"
-        app:layout_constraintTop_toBottomOf="@id/filter_spinner"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="20dp"
+        android:text="Voice"
+        app:layout_constraintBottom_toTopOf="@id/sensor_mode_button"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp" />
+        android:backgroundTint="#800020"/>
+
+    <Button
+        android:id="@+id/sensor_mode_button"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="150dp"
+        android:text="Sensor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:backgroundTint="#800020"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

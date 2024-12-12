@@ -1,6 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F5E1C1"
@@ -9,217 +11,233 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:padding="24dp">
 
-        <!-- 날씨 카드 위젯 -->
+        <!-- Weather Card with Gradient Background -->
         <androidx.cardview.widget.CardView
             android:id="@+id/weather_card"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="48dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="12dp"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp">
+                android:background="#FFF8E1"
+                android:padding="10dp">
 
                 <ImageView
                     android:id="@+id/weather_icon"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:contentDescription="날씨 아이콘"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_margin="20dp"
+                    android:contentDescription="Weather Icon"
                     android:src="@drawable/ic_sunny"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:id="@+id/weather_container"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <TextView
-                    android:id="@+id/weather_description"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Sunny"
-                    android:textSize="18sp"
-                    android:textColor="#000000"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/weather_icon"
-                    android:layout_marginStart="16dp" />
+                    app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:id="@+id/weather_temperature"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="34°C"
-                    android:textSize="24sp"
-                    android:textColor="#000000"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/weather_description"
-                    app:layout_constraintStart_toEndOf="@id/weather_icon"
-                    android:layout_marginStart="16dp" />
+                    <TextView
+                        android:id="@+id/weather_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sunny"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_gravity="center"
+                        app:layout_constraintEnd_toEndOf="parent"/>
 
-                <TextView
-                    android:id="@+id/weather_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="June 21, 2022"
-                    android:textSize="14sp"
-                    android:textColor="#000000"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/weather_temperature"
-                    app:layout_constraintStart_toEndOf="@id/weather_icon"
-                    android:layout_marginStart="16dp" />
+                    <TextView
+                        android:id="@+id/weather_temperature"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="16°C"
+                        android:textColor="@color/black"
+                        android:textSize="32sp"
+                        android:textStyle="bold"
+                        android:layout_gravity="center"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/weather_description"/>
+
+                    <TextView
+                        android:id="@+id/weather_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="December 18, 2024"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="16dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/weather_icon"
+                        app:layout_constraintTop_toBottomOf="@+id/weather_temperature"/>
+                </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
         </androidx.cardview.widget.CardView>
 
-        <!-- 별점이 가장 높은 식당 위젯 -->
+        <!-- Top Rated Restaurant Card -->
         <androidx.cardview.widget.CardView
             android:id="@+id/top_rated_restaurant_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="48dp"
-            app:cardCornerRadius="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            app:cardCornerRadius="20dp"
             app:cardElevation="8dp"
-            app:layout_constraintTop_toBottomOf="@id/weather_card"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/weather_card">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp"
-                android:gravity="center_horizontal">
+                android:padding="20dp"
+                android:background="#FFFFFF">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Top Rated Restaurant"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#000000" />
+                    android:textAlignment="center"
+                    android:textColor="#2C3E50"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/top_restaurant_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="12dp"
                     android:text="No data"
-                    android:textSize="16sp"
-                    android:textColor="#666666" />
+                    android:textAlignment="center"
+                    android:textColor="#34495E"
+                    android:textSize="18sp" />
 
-                <!-- 와인색 별로 별점 표시 -->
                 <LinearLayout
                     android:id="@+id/top_restaurant_rating_stars"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center_horizontal" />
+                    android:layout_marginTop="12dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal" />
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
 
-        <!-- 방문 횟수가 가장 높은 식당 위젯 -->
+        <!-- Most Visited Restaurant Card -->
         <androidx.cardview.widget.CardView
             android:id="@+id/most_visited_restaurant_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="48dp"
-            app:cardCornerRadius="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            app:cardCornerRadius="20dp"
             app:cardElevation="8dp"
-            app:layout_constraintTop_toBottomOf="@id/top_rated_restaurant_card"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/top_rated_restaurant_card">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp"
-                android:gravity="center_horizontal">
+                android:padding="20dp"
+                android:background="#FFFFFF">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Most Visited Restaurant"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#000000" />
+                    android:textAlignment="center"
+                    android:textColor="#2C3E50"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/most_visited_restaurant_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="12dp"
                     android:text="No data"
-                    android:textSize="16sp"
-                    android:textColor="#666666" />
+                    android:textAlignment="center"
+                    android:textColor="#34495E"
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/most_visited_restaurant_count"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="Visits: 0"
-                    android:textSize="16sp"
-                    android:textColor="#666666" />
+                    android:textAlignment="center"
+                    android:textColor="#7F8C8D"
+                    android:textSize="16sp" />
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
 
-        <!-- 가장 많은 돈을 쓴 식당 위젯 -->
+        <!-- Most Spent Restaurant Card -->
         <androidx.cardview.widget.CardView
             android:id="@+id/most_spent_restaurant_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="48dp"
-            app:cardCornerRadius="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            app:cardCornerRadius="20dp"
             app:cardElevation="8dp"
-            app:layout_constraintTop_toBottomOf="@id/most_visited_restaurant_card"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/most_visited_restaurant_card">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp"
-                android:gravity="center_horizontal">
+                android:padding="20dp"
+                android:background="#FFFFFF">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Most Spent Restaurant"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#000000" />
+                    android:textAlignment="center"
+                    android:textColor="#2C3E50"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/most_spent_restaurant_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="12dp"
                     android:text="No data"
-                    android:textSize="16sp"
-                    android:textColor="#666666" />
+                    android:textAlignment="center"
+                    android:textColor="#34495E"
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/most_spent_restaurant_total"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="Total Spent: 0"
-                    android:textSize="16sp"
-                    android:textColor="#666666" />
+                    android:textAlignment="center"
+                    android:textColor="#7F8C8D"
+                    android:textSize="16sp" />
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -62,7 +62,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
                             android:rating="4.5"
-                            android:progressTint="#600B04"/>
+                            android:progressTint="#800020"/>
 
                         <TextView
                             android:id="@+id/restaurantAddressText"
@@ -95,7 +95,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="예약 날짜"
-                    android:textColor="#600B04"
+                    android:textColor="#800020"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="16dp"/>
@@ -155,7 +155,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="세부 사항"
-                    android:textColor="#600B04"
+                    android:textColor="#800020"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp"/>
@@ -219,7 +219,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:backgroundTint="#600B04"
+            android:backgroundTint="#800020"
             android:text="가능한 테이블 보기"
             android:textColor="@android:color/white"
             android:textStyle="bold"

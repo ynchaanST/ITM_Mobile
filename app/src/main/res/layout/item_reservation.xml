@@ -4,18 +4,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginTop="32dp"
     app:cardCornerRadius="12dp"
-    app:cardElevation="4dp"
-    android:background="#600B04"
-
-    android:layout_marginTop="32dp" >
+    app:cardElevation="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:background="#FFF8E1">
 
         <!-- 레스토랑 이름 -->
         <TextView
@@ -32,7 +32,7 @@
             android:id="@+id/reservationDateTimeText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="예약 일시: 2024년 12월 01일 19:00"
+            android:text="예약 일시 : 2024년 12월 01일 19:00"
             android:textSize="14sp"
             android:textColor="@android:color/black"
             android:layout_marginTop="8dp" />
@@ -42,7 +42,7 @@
             android:id="@+id/guestsText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="인원: 성인 4명"
+            android:text="예약 인원 : 성인 4명"
             android:textSize="14sp"
             android:textColor="@android:color/black"
             android:layout_marginTop="4dp" />
@@ -54,8 +54,8 @@
             android:layout_height="wrap_content"
             android:text="상태: CONFIRMED"
             android:textSize="14sp"
-            android:textColor="#FFD700"
-            android:layout_marginTop="4dp" />
+            android:textColor="#800020"
+            android:layout_marginTop="12dp" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>
