@@ -12,16 +12,24 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.storage.FirebaseStorage
 
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var profileImageView: ImageView
+    private lateinit var auth: FirebaseAuth
+    private var selectedImageUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
         enableEdgeToEdge()
+
+        // Initialize FirebaseAuth
+        auth = FirebaseAuth.getInstance()
 
         // Initialize UI elements
         profileImageView = findViewById(R.id.profile_image)
@@ -30,23 +38,100 @@ class SettingsActivity : AppCompatActivity() {
         val emailEditText: EditText = findViewById(R.id.edit_email)
         val passwordEditText: EditText = findViewById(R.id.edit_password)
 
+        // Load current profile image
+        loadProfileImage()
+
         // Set up click listener for the profile image
         profileImageView.setOnClickListener {
             showImageSelectionDialog()
         }
 
-        // Save changes button logic (placeholder for now)
+        // Save changes button logic
         saveChangesButton.setOnClickListener {
             val name = nameEditText.text.toString()
             val email = emailEditText.text.toString()
             val password = passwordEditText.text.toString()
 
-            // Validate inputs (basic example)
+            // Validate inputs
             if (name.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()) {
-                Toast.makeText(this, "Changes Saved!", Toast.LENGTH_SHORT).show()
+                // Update profile information
+                updateProfileInfo(name, email, password)
+
+                // Upload profile image if selected
+                if (selectedImageUri != null) {
+                    uploadImageToFirebase(selectedImageUri!!)
+                }
             } else {
                 Toast.makeText(this, "Please fill out all fields", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    // Load current profile image from Firebase Storage
+    private fun loadProfileImage() {
+        val user = auth.currentUser
+        if (user != null) {
+            val storageRef = FirebaseStorage.getInstance().reference.child("profile_images/${user.uid}.jpg")
+            storageRef.downloadUrl.addOnSuccessListener { uri ->
+                profileImageView.setImageURI(uri)
+            }.addOnFailureListener {
+                Toast.makeText(this, "Failed to load profile image", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    // Update name, email, and password in Firebase
+    private fun updateProfileInfo(name: String, email: String, password: String) {
+        val user = auth.currentUser
+
+        if (user != null) {
+            // Update display name
+            val profileUpdates = UserProfileChangeRequest.Builder()
+                .setDisplayName(name)
+                .build()
+
+            user.updateProfile(profileUpdates)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Name updated successfully", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Failed to update name", Toast.LENGTH_SHORT).show()
+                }
+
+            // Update email
+            user.updateEmail(email)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Email updated successfully", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Failed to update email", Toast.LENGTH_SHORT).show()
+                }
+
+            // Update password
+            user.updatePassword(password)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Password updated successfully", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Failed to update password", Toast.LENGTH_SHORT).show()
+                }
+        } else {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // Upload selected image to Firebase Storage
+    private fun uploadImageToFirebase(imageUri: Uri) {
+        val user = auth.currentUser
+        if (user != null) {
+            val storageRef = FirebaseStorage.getInstance().reference.child("profile_images/${user.uid}.jpg")
+            storageRef.putFile(imageUri)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Profile picture updated successfully!", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Failed to upload profile picture", Toast.LENGTH_SHORT).show()
+                }
         }
     }
 
@@ -70,7 +155,7 @@ class SettingsActivity : AppCompatActivity() {
     // Handle result from gallery
     private val galleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == RESULT_OK) {
-            val selectedImageUri: Uri? = result.data?.data
+            selectedImageUri = result.data?.data
             if (selectedImageUri != null) {
                 profileImageView.setImageURI(selectedImageUri)
             } else {
