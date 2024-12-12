@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.method.PasswordTransformationMethod
 import android.util.Log
 import android.widget.*
 import androidx.activity.enableEdgeToEdge
@@ -12,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
@@ -31,44 +33,97 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var passwordEditText: EditText
     private lateinit var registerButton: Button
     private lateinit var alreadyHaveAccountTextView: TextView
+    private lateinit var togglePasswordVisibility: ImageView
+
 
     private var currentPhotoPath: String? = null  // For storing camera photo path
     private var selectedImageUri: Uri? = null  // For storing selected image URI
+    private var isPasswordVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Ensure that the layout file is named activity_register.xml
         setContentView(R.layout.activity_register)
         enableEdgeToEdge()
 
-        // Initialize Firebase Auth and Firestore
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
-        // Initialize views by their IDs from the XML layout
+        initializeViews()
+        setupClickListeners()
+    }
+    private fun initializeViews() {
         profilePicture = findViewById(R.id.profile_picture)
         nameEditText = findViewById(R.id.name_edit_text)
         emailEditText = findViewById(R.id.email_edit_text)
         passwordEditText = findViewById(R.id.password_edit_text)
         registerButton = findViewById(R.id.register_button)
         alreadyHaveAccountTextView = findViewById(R.id.already_have_account_text_view)
-
-        // Set click listener for the register button
+        togglePasswordVisibility = findViewById(R.id.toggle_password_visibility)
+    }
+    private fun setupClickListeners() {
         registerButton.setOnClickListener {
             registerUser()
         }
 
-        // Set click listener for the "Already have an Account" text view
         alreadyHaveAccountTextView.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
-            finish()  // Close this activity to prevent returning to it
+            finish()
         }
 
-        // Set click listener for the profile picture
         profilePicture.setOnClickListener {
-            showImageSelectionDialog()  // Show dialog to select image source
+            showImageSelectionDialog()
         }
+
+        togglePasswordVisibility.setOnClickListener {
+            isPasswordVisible = !isPasswordVisible
+            if (isPasswordVisible) {
+                passwordEditText.transformationMethod = null
+                togglePasswordVisibility.setImageResource(R.drawable.ic_visibility_off)
+            } else {
+                passwordEditText.transformationMethod = PasswordTransformationMethod.getInstance()
+                togglePasswordVisibility.setImageResource(R.drawable.ic_visibility)
+            }
+            passwordEditText.setSelection(passwordEditText.text.length)
+        }
+    }
+
+    private fun registerUser() {
+        val username = nameEditText.text.toString().trim()
+        val email = emailEditText.text.toString().trim()
+        val password = passwordEditText.text.toString().trim()
+
+        if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "모든 필드를 입력하세요", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Update user profile with display name
+                    val user = auth.currentUser
+                    val profileUpdates = UserProfileChangeRequest.Builder()
+                        .setDisplayName(username)
+                        .build()
+
+                    user?.updateProfile(profileUpdates)
+                        ?.addOnCompleteListener { profileTask ->
+                            if (profileTask.isSuccessful) {
+                                // Save additional user data
+                                saveUserData(username, email)
+                            } else {
+                                Log.e("RegisterActivity", "Error updating profile", profileTask.exception)
+                            }
+                        }
+                } else {
+                    Toast.makeText(
+                        this,
+                        "회원가입 실패: ${task.exception?.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
     }
 
     private fun showImageSelectionDialog() {
@@ -144,36 +199,6 @@ class RegisterActivity : AppCompatActivity() {
             }
         }
 
-    private fun registerUser() {
-        // Retrieve user inputs and trim whitespace
-        val username = nameEditText.text.toString().trim()
-        val email = emailEditText.text.toString().trim()
-        val password = passwordEditText.text.toString().trim()
-
-        // Check if any field is empty
-        if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "모든 필드를 입력하세요", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // Create a new user with Firebase Authentication
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Registration success
-                    saveUserData(username, email)
-                    Toast.makeText(this, "회원가입 성공", Toast.LENGTH_SHORT).show()
-                    navigateToMainActivity()
-                } else {
-                    // Registration failed
-                    Toast.makeText(
-                        this,
-                        "회원가입 실패: ${task.exception?.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-    }
 
     private fun saveUserData(username: String, email: String) {
         val userId = auth.currentUser?.uid ?: return
@@ -198,6 +223,8 @@ class RegisterActivity : AppCompatActivity() {
                                     "RegisterActivity",
                                     "User data saved successfully"
                                 )
+                                Toast.makeText(this, "회원가입이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                                finish()
                             }
                             .addOnFailureListener { e ->
                                 Log.e("RegisterActivity", "Error saving user data", e)
@@ -214,6 +241,8 @@ class RegisterActivity : AppCompatActivity() {
             userRef.set(user)
                 .addOnSuccessListener {
                     Log.d("RegisterActivity", "User data saved successfully")
+                    Toast.makeText(this, "회원가입이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                    finish()
                 }
                 .addOnFailureListener { e ->
                     Log.e("RegisterActivity", "Error saving user data", e)
@@ -221,9 +250,5 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun navigateToMainActivity() {
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
-        finish()  // Close this activity
-    }
+
 }

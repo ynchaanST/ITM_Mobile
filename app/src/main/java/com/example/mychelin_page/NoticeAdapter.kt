@@ -1,7 +1,6 @@
 package com.example.mychelin_page
 
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -11,8 +10,7 @@ import java.util.Date
 import java.util.Locale
 
 class NoticeAdapter(
-    private val onItemClick: (NotificationData) -> Unit,
-    private val onItemDismiss: (NotificationData) -> Unit
+    private val onItemClick: (NotificationData) -> Unit
 ) : RecyclerView.Adapter<NoticeAdapter.ViewHolder>() {
     private val notifications = mutableListOf<NotificationData>()
 
@@ -27,36 +25,12 @@ class NoticeAdapter(
             messageText.text = notification.message
             timeText.text = formatTime(notification.timestamp)
 
-            if (!notification.isRead) {
-                container.setBackgroundResource(R.color.white)
-            } else {
-                container.setBackgroundResource(R.color.silver)
-            }
+            container.setBackgroundResource(
+                if (!notification.isRead) R.color.white else R.color.silver
+            )
 
             itemView.setOnClickListener {
                 onItemClick(notification)
-            }
-
-            // 스와이프 기능을 위한 터치 이벤트 처리
-            var startX = 0f
-            itemView.setOnTouchListener { v, event ->
-                when (event.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        startX = event.x
-                        true
-                    }
-                    MotionEvent.ACTION_UP -> {
-                        val endX = event.x
-                        val deltaX = endX - startX
-                        if (deltaX < -100) { // 왼쪽으로 스와이프
-                            onItemDismiss(notification)
-                            true
-                        } else {
-                            false
-                        }
-                    }
-                    else -> false
-                }
             }
         }
 
@@ -78,19 +52,13 @@ class NoticeAdapter(
 
     override fun getItemCount(): Int = notifications.size
 
-    // 알림 리스트 업데이트
+    fun getNotificationAt(position: Int): NotificationData {
+        return notifications[position]
+    }
+
     fun updateNotifications(newNotifications: List<NotificationData>) {
         notifications.clear()
         notifications.addAll(newNotifications)
         notifyDataSetChanged()
-    }
-
-    // 특정 알림 제거
-    fun removeNotification(notification: NotificationData) {
-        val position = notifications.indexOf(notification)
-        if (position != -1) {
-            notifications.removeAt(position)
-            notifyItemRemoved(position)
-        }
     }
 }
