@@ -2,20 +2,30 @@ package com.example.mychelin_page
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.method.PasswordTransformationMethod
 import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var sessionManager: SessionManager
+    private lateinit var googleSignInClient: GoogleSignInClient
+    private var isPasswordVisible = false
+    private val RC_SIGN_IN = 9001
 
     override fun onCreate(savedInstanceState: Bundle?) {
         try {
@@ -28,6 +38,14 @@ class LoginActivity : AppCompatActivity() {
             auth = FirebaseAuth.getInstance()
             sessionManager = SessionManager(this)
 
+            // Configure Google Sign In
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken("841138193356-5r1i2hbd1j50bgekf697i77fio36n05h.apps.googleusercontent.com")  // Firebase 콘솔에서 가져온 웹 클라이언트 ID
+                .requestEmail()
+                .build()
+
+            googleSignInClient = GoogleSignIn.getClient(this, gso)
+
             // Check if user is already logged in
             if (sessionManager.isLoggedIn()) {
                 val userData = sessionManager.getLoginSession()
@@ -35,7 +53,7 @@ class LoginActivity : AppCompatActivity() {
                     val savedPassword = sessionManager.getPassword()
                     if (savedPassword.isNotEmpty()) {
                         loginUser(email, savedPassword)
-                        return@onCreate  // 로그인 처리 후 바로 리턴
+                        return@onCreate
                     }
                 }
             }
@@ -54,6 +72,8 @@ class LoginActivity : AppCompatActivity() {
         val emailEditText: EditText = findViewById(R.id.email_edit_text)
         val passwordEditText: EditText = findViewById(R.id.password_edit_text)
         val rememberMeCheckBox: CheckBox = findViewById(R.id.remember_me_checkbox)
+        val togglePasswordVisibility: ImageButton = findViewById(R.id.toggle_password_visibility)
+        val googleSignInButton: Button = findViewById(R.id.google_sign_in_button)
 
         // Set up auto-fill if available
         val savedUserData = sessionManager.getLoginSession()
@@ -64,6 +84,20 @@ class LoginActivity : AppCompatActivity() {
             passwordEditText.setText(sessionManager.getPassword())
         }
 
+        // Set up password visibility toggle
+        togglePasswordVisibility.setOnClickListener {
+            isPasswordVisible = !isPasswordVisible
+            if (isPasswordVisible) {
+                passwordEditText.transformationMethod = null
+                togglePasswordVisibility.setImageResource(R.drawable.ic_visibility_off)
+            } else {
+                passwordEditText.transformationMethod = PasswordTransformationMethod.getInstance()
+                togglePasswordVisibility.setImageResource(R.drawable.ic_visibility)
+            }
+            passwordEditText.setSelection(passwordEditText.text.length)
+        }
+
+        // Set up login button
         loginButton.setOnClickListener {
             val email = emailEditText.text.toString().trim()
             val password = passwordEditText.text.toString().trim()
@@ -77,9 +111,45 @@ class LoginActivity : AppCompatActivity() {
             loginUser(email, password)
         }
 
+        // Set up Google Sign In button
+        googleSignInButton.setOnClickListener {
+            val signInIntent = googleSignInClient.signInIntent
+            startActivityForResult(signInIntent, RC_SIGN_IN)
+        }
+
         createAccountTextView.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == RC_SIGN_IN) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                firebaseAuthWithGoogle(account.idToken!!)
+            } catch (e: ApiException) {
+                Toast.makeText(this, "Google 로그인 실패: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun firebaseAuthWithGoogle(idToken: String) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val user = auth.currentUser
+                    user?.let {
+                        sessionManager.saveLoginSession(it.email ?: "", it.uid)
+                    }
+                    navigateToMainActivity()
+                } else {
+                    Toast.makeText(this, "Firebase Google 인증 실패", Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 
     private fun loginUser(email: String, password: String) {
@@ -91,7 +161,6 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Save login session
                     auth.currentUser?.let { user ->
                         sessionManager.saveLoginSession(email, user.uid)
                     }
@@ -99,7 +168,6 @@ class LoginActivity : AppCompatActivity() {
                     navigateToMainActivity()
                 } else {
                     Toast.makeText(this, "로그인 실패: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
-                    // 로그인 실패시 세션 클리어
                     sessionManager.clearSession()
                 }
             }
