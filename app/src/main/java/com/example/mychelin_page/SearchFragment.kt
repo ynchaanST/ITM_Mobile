@@ -51,7 +51,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback, SensorEventListener {
     private val LOCATION_PERMISSION_REQUEST_CODE = 1000
     private val markers = mutableListOf<Marker>()
     private val db = FirebaseFirestore.getInstance()
-    private val geocodeApiKey = "VKFgdhKpLwYMLWZEh81rgN87eForBC12XEq6CRzb" // 네이버 API 키
+    private val geocodeApiKey = " " // 네이버 API 키
 
     private lateinit var voiceSearchButton: Button
     private lateinit var speechRecognizer: SpeechRecognizer
@@ -187,7 +187,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback, SensorEventListener {
         for (restaurant in restaurants) {
             val request = Request.Builder()
                 .url("https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query=${restaurant.roadAddress}")
-                .addHeader("X-NCP-APIGW-API-KEY-ID", "8ncq4hnswu")
+                .addHeader("X-NCP-APIGW-API-KEY-ID", " ")
                 .addHeader("X-NCP-APIGW-API-KEY", geocodeApiKey)
                 .build()
 

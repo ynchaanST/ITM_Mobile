@@ -36,7 +36,7 @@ class NoticeFragment : Fragment(R.layout.fragment_notice) {
 
     private fun setupSwipeToDelete() {
         val swipeHandler = object : ItemTouchHelper.SimpleCallback(
-            0, // 드래그 방향 (사용하지 않음)
+            0,
             ItemTouchHelper.LEFT // 왼쪽으로 스와이프만 허용
         ) {
             override fun onMove(

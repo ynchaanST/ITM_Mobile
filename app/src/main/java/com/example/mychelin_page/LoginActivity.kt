@@ -40,7 +40,7 @@ class LoginActivity : AppCompatActivity() {
 
             // Configure Google Sign In
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("841138193356-5r1i2hbd1j50bgekf697i77fio36n05h.apps.googleusercontent.com")  // Firebase 콘솔에서 가져온 웹 클라이언트 ID
+                .requestIdToken(" ")  // Firebase 콘솔에서 가져온 웹 클라이언트 ID
                 .requestEmail()
                 .build()
 

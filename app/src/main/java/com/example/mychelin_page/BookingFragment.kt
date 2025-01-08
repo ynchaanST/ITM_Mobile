@@ -155,7 +155,7 @@ class BookingFragment : Fragment(R.layout.fragment_booking) {
                 set(Calendar.MILLISECOND, 0)
             }
 
-            // 영업 시간 체크
+
             if (timePicker.hour < 10 || timePicker.hour >= 22) {
                 Toast.makeText(context, "예약 가능 시간은 오전 10시부터 오후 10시까지입니다.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -199,7 +199,7 @@ class BookingFragment : Fragment(R.layout.fragment_booking) {
                 cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
                 cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH)
     }
-    // 나머지 메서드들은 동일...
+
     private fun createReservation(
         restaurantId: String,
         tableNumber: Int,

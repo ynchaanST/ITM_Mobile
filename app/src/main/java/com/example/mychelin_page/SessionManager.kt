@@ -64,9 +64,9 @@ class SessionManager(context: Context) {
     }
 }
 
-// 간단한 암호화 유틸리티 클래스 (실제 프로덕션에서는 더 강력한 암호화 방식 사용 권장)
+// 간단한 암호화 유틸리티 클래스
 class EncryptionUtils {
-    private val secretKey = "YourSecretKey" // 실제로는 더 안전한 방식으로 키 관리 필요
+    private val secretKey = "YourSecretKey" // 실제로는 더 안전하게
 
     fun encrypt(text: String): String {
         return android.util.Base64.encodeToString(text.toByteArray(), android.util.Base64.DEFAULT)
